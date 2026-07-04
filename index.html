@@ -2,179 +2,305 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>兰博护航 - 专业电竞服务平台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>兰博护航 - 和平精英专业陪玩</title>
     <style>
-        /* --- 基础设置 --- */
-        :root { --primary: #007aff; --bg: #f5f5f5; --white: #ffffff; --text: #333; --gray: #999; }
+        /* --- 全局重置与基础样式 --- */
+        :root {
+            --primary-color: #007AFF; /* KEG风格蓝 */
+            --bg-color: #F5F6FA;
+            --text-main: #333333;
+            --text-sub: #999999;
+            --price-red: #FF4D4F;
+            --nav-height: 60px;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: calc(var(--nav-height) + 20px); /* 关键：防止内容被底部导航遮挡 */
+        }
+
+        /* --- 顶部搜索/标题栏 --- */
+        .header {
+            background: #fff;
+            padding: 10px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 18px; font-weight: 900; color: var(--primary-color); letter-spacing: 1px; }
+        .status-badge { font-size: 12px; background: #E6F7FF; color: var(--primary-color); padding: 2px 6px; border-radius: 4px; border: 1px solid #91D5FF; }
+
+        /* --- 轮播图模拟 --- */
+        .banner {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #0066cc, #003366);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .banner::after { content: 'PEACE ELITE'; position: absolute; opacity: 0.1; font-size: 40px; transform: rotate(-10deg); }
+
+        /* --- 金刚区 (功能图标) --- */
+        .grid-nav {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background: #fff;
+            padding: 15px 10px;
+            margin-bottom: 10px;
+        }
+        .grid-item { text-align: center; font-size: 12px; color: #555; display: flex; flex-direction: column; align-items: center; }
+        .icon-box {
+            width: 45px; height: 45px; background: #f0f0f0; border-radius: 12px; margin-bottom: 5px;
+            display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        /* 简单的图标颜色区分 */
+        .icon-1 { background: #E6F7FF; color: #1890FF; }
+        .icon-2 { background: #FFF1F0; color: #F5222D; }
+        .icon-3 { background: #FFFBE6; color: #FAAD14; }
+        .icon-4 { background: #F6FFED; color: #52C41A; }
+
+        /* --- 推荐标题 --- */
+        .section-title {
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .section-title::before {
+            content: ''; width: 4px; height: 16px; background: var(--primary-color); margin-right: 8px; border-radius: 2px;
+        }
+
+        /* --- 商品列表 (瀑布流布局) --- */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 两列 */
+            gap: 10px;
+            padding: 0 10px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.1s;
+        }
+        .card:active { transform: scale(0.98); } /* 点击反馈 */
+
+        .card-img {
+            height: 100px;
+            background: #eee;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+        }
+        /* 模拟图片标签 */
+        .tag { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; padding: 2px 4px; border-radius: 4px; }
+        .tag-hot { background: #FF4D4F; }
+
+        .card-info { padding: 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-title { font-size: 13px; font-weight: 600; line-height: 1.4; margin-bottom: 5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-tags { font-size: 10px; color: #FF9900; margin-bottom: 5px; border: 1px solid #FF9900; display: inline-block; padding: 0 2px; border-radius: 2px; width: fit-content;}
         
-        /* --- 顶部导航 --- */
-        .header { background: var(--white); padding: 15px; text-align: center; font-weight: bold; font-size: 18px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #eee; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .price { color: var(--price-red); font-size: 16px; font-weight: bold; }
+        .price span { font-size: 12px; }
         
-        /* --- 页面容器 --- */
-        .page { display: none; animation: fadeIn 0.3s; }
-        .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* 核心修复：购买按钮样式 */
+        .buy-btn {
+            background: linear-gradient(90deg, #FF9900, #FFCC00);
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10; /* 确保层级最高 */
+        }
 
-        /* --- 首页样式 --- */
-        .banner { width: 100%; height: 150px; background: linear-gradient(135deg, #007aff, #00c6ff); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold; }
-        .notice { background: #fffbe6; color: #faad14; padding: 10px; font-size: 12px; display: flex; align-items: center; }
-        .notice span { margin-left: 5px; color: #333; }
-        
-        .grid-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; background: var(--white); margin-bottom: 10px; }
-        .grid-item { text-align: center; font-size: 12px; color: #666; }
-        .grid-icon { width: 40px; height: 40px; background: #e6f7ff; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold; }
+        /* --- 底部固定导航栏 --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #eee;
+            z-index: 999; /* 极高优先级，但在内容之上 */
+            padding-bottom: env(safe-area-inset-bottom); /* 适配iPhone底部黑条 */
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #999;
+            font-size: 10px;
+            flex: 1;
+            height: 100%;
+            justify-content: center;
+        }
+        .nav-item.active { color: var(--primary-color); font-weight: bold; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
 
-        .section-title { padding: 10px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .section-title span:last-child { font-size: 12px; color: var(--gray); font-weight: normal; }
-
-        .product-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; }
-        .product-card { background: var(--white); border-radius: 8px; overflow: hidden; padding-bottom: 10px; }
-        .p-img { width: 100%; height: 100px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
-        .p-info { padding: 8px; }
-        .p-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; height: 40px; overflow: hidden; }
-        .p-tags span { font-size: 10px; background: #f0f0f0; color: #666; padding: 2px 4px; border-radius: 4px; }
-        .p-price { margin-top: 8px; color: #ff4d4f; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
-
-        /* --- 分类页样式 --- */
-        .category-container { display: flex; height: calc(100vh - 110px); }
-        .cat-sidebar { width: 90px; background: #f0f0f0; overflow-y: auto; }
-        .cat-item { padding: 15px 10px; text-align: center; font-size: 13px; color: #666; border-left: 3px solid transparent; }
-        .cat-item.active { background: var(--white); color: var(--primary); border-left-color: var(--primary); font-weight: bold; }
-        .cat-content { flex: 1; background: var(--white); padding: 10px; overflow-y: auto; }
-        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .cat-box { text-align: center; font-size: 12px; }
-        .cat-box-img { width: 100%; aspect-ratio: 1; background: #eee; border-radius: 8px; margin-bottom: 5px; }
-
-        /* --- 消息页样式 --- */
-        .msg-list { background: var(--white); }
-        .msg-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; }
-        .msg-avatar { width: 45px; height: 45px; background: #007aff; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; color: white; }
-        .msg-info { flex: 1; }
-        .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .msg-name { font-weight: bold; font-size: 15px; }
-        .msg-time { font-size: 12px; color: #999; }
-        .msg-text { font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
-
-        /* --- 个人中心样式 --- */
-        .user-header { background: linear-gradient(to right, #007aff, #00c6ff); padding: 30px 20px; color: white; display: flex; align-items: center; }
-        .user-avatar { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; margin-right: 15px; border: 2px solid white; }
-        .user-name { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-        .user-id { font-size: 12px; opacity: 0.8; }
-        
-        .balance-card { background: var(--white); margin: -20px 15px 15px; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-around; text-align: center; }
-        .bal-num { font-size: 18px; font-weight: bold; color: #333; margin-top: 5px; }
-        .bal-label { font-size: 12px; color: #999; }
-
-        .menu-list { background: var(--white); margin-top: 10px; }
-        .menu-item { padding: 15px; border-bottom: 1px solid #f9f9f9; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-        .menu-item:active { background: #f9f9f9; }
-
-        /* --- 底部导航栏 --- */
-        .tab-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: var(--white); border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-        .tab-item { text-align: center; color: #999; font-size: 10px; flex: 1; }
-        .tab-item.active { color: var(--primary); }
-        .tab-icon { font-size: 22px; margin-bottom: 2px; display: block; }
-
-        /* --- 弹窗 --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
-        .modal { background: white; width: 80%; border-radius: 12px; padding: 20px; text-align: center; }
-        .modal h3 { margin-bottom: 10px; }
-        .modal p { font-size: 14px; color: #666; margin-bottom: 20px; }
-        .modal-btn { background: var(--primary); color: white; padding: 10px 0; width: 100%; border-radius: 20px; border: none; font-size: 16px; }
+        /* --- 弹窗样式 --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000;
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal {
+            background: #fff; width: 80%; border-radius: 12px; padding: 20px; text-align: center;
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal h3 { margin-bottom: 10px; color: #333; }
+        .modal p { font-size: 14px; color: #666; margin-bottom: 15px; line-height: 1.5; }
+        .modal-btn {
+            background: var(--primary-color); color: #fff; border: none; padding: 10px 20px;
+            border-radius: 20px; font-size: 14px; width: 100%;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 顶部标题 -->
-    <div class="header" id="page-title">兰博护航</div>
+    <!-- 顶部 -->
+    <div class="header">
+        <div class="logo">LAMBO CLUB</div>
+        <div class="status-badge">● 在线接单</div>
+    </div>
 
-    <!-- 1. 首页 -->
-    <div id="home-page" class="page active">
-        <div class="banner">LAMBO CLUB<br><span style="font-size:14px; font-weight:normal;">专业 · 高效 · 安全</span></div>
-        <div class="notice">📢 公告：<span>系统运行正常，目前接单中，加微秒回复。</span></div>
-        
-        <div class="grid-nav">
-            <div class="grid-item"><div class="grid-icon">🎮</div>和平精英</div>
-            <div class="grid-item"><div class="grid-icon">🔫</div>三角洲行动</div>
-            <div class="grid-item"><div class="grid-icon">💣</div>暗区突围</div>
-            <div class="grid-item"><div class="grid-icon">⚡</div>极速上分</div>
-        </div>
-
-        <div class="section-title"><span>热门推荐</span><span>查看更多 ></span></div>
-        <div class="product-list">
-            <!-- 商品卡片 1 -->
-            <div class="product-card" onclick="orderAction('苏尔南撤离单')">
-                <div class="p-img" style="background:#333;">苏尔南</div>
-                <div class="p-info">
-                    <div class="p-title">苏尔南冲突·保底1000万物资</div>
-                    <div class="p-tags"><span>包赔</span> <span>纯手工</span></div>
-                    <div class="p-price">¥68.00 <button class="buy-btn">立即下单</button></div>
-                </div>
-            </div>
-            <!-- 商品卡片 2 -->
-            <div class="product-card" onclick="orderAction('地铁逃生护航')">
-                <div class="p-img" style="background:#555;">地铁逃生</div>
-                <div class="p-info">
-                    <div class="p-title">地铁逃生·老六克星护航</div>
-                    <div class="p-tags"><span>kd保证</span> <span>装备全送</span></div>
-                    <div class="p-price">¥128.00 <button class="buy-btn">立即下单</button></div>
-                </div>
-            </div>
-             <!-- 商品卡片 3 -->
-             <div class="product-card" onclick="orderAction('三角洲摸金')">
-                <div class="p-img" style="background:#222;">三角洲</div>
-                <div class="p-info">
-                    <div class="p-title">三角洲行动·零号大坝摸金</div>
-                    <div class="p-tags"><span>曼德尔砖</span> <span>红卡</span></div>
-                    <div class="p-price">¥199.00 <button class="buy-btn">立即下单</button></div>
-                </div>
-            </div>
-             <!-- 商品卡片 4 -->
-             <div class="product-card" onclick="orderAction('普通排位代练')">
-                <div class="p-img" style="background:#444;">排位代练</div>
-                <div class="p-info">
-                    <div class="p-title">王牌/战神段位·指定打手</div>
-                    <div class="p-tags"><span>效率</span> <span>绿玩</span></div>
-                    <div class="p-price">¥20.00/星 <button class="buy-btn">立即下单</button></div>
-                </div>
-            </div>
+    <!-- 轮播图 -->
+    <div class="banner">
+        <div style="text-align:center;">
+            <div style="font-size:24px; margin-bottom:5px;">和平精英 · _METRO_</div>
+            <div style="font-size:12px; opacity:0.8;">专业护航 | 装备全保 | 效率打手</div>
         </div>
     </div>
 
-    <!-- 2. 分类页 -->
-    <div id="category-page" class="page">
-        <div class="category-container">
-            <div class="cat-sidebar">
-                <div class="cat-item active">热门游戏</div>
-                <div class="cat-item">和平精英</div>
-                <div class="cat-item">PUBG Mobile</div>
-                <div class="cat-item">COD Mobile</div>
-                <div class="cat-item">英雄联盟</div>
-            </div>
-            <div class="cat-content">
-                <div class="cat-grid">
-                    <div class="cat-box"><div class="cat-box-img"></div>苏尔南</div>
-                    <div class="cat-box"><div class="cat-box-img"></div>旧封锁区</div>
-                    <div class="cat-box"><div class="cat-box-img"></div>辐射区</div>
-                    <div class="cat-box"><div class="cat-box-img"></div>迷雾港口</div>
-                    <div class="cat-box"><div class="cat-box-img"></div>冰河禁区</div>
-                </div>
-            </div>
+    <!-- 功能入口 -->
+    <div class="grid-nav">
+        <div class="grid-item">
+            <div class="icon-box icon-1">🎧</div>
+            <span>联系客服</span>
+        </div>
+        <div class="grid-item">
+            <div class="icon-box icon-2">⚡</div>
+            <span>极速下单</span>
+        </div>
+        <div class="grid-item">
+            <div class="icon-box icon-3">🏆</div>
+            <span>打手入驻</span>
+        </div>
+        <div class="grid-item">
+            <div class="icon-box icon-4">🔍</div>
+            <span>订单查询</span>
         </div>
     </div>
 
-    <!-- 3. 消息页 -->
-    <div id="message-page" class="page">
-        <div class="msg-list">
-            <div class="msg-item">
-                <div class="msg-avatar">客</div>
-                <div class="msg-info">
-                    <div class="msg-top"><span class="msg-name">官方客服-兰博</span><span class="msg-time">刚刚</span></div>
-                    <div class="msg-text">您好！欢迎光临兰博护航，有什么可以帮您？</div>
-                </div>
-            </div>
-            <div class="
+    <!-- 热门套餐 -->
+    <div class="section-title">热门护航套餐</div>
+    <div class="product-list" id="hot-list">
+        <!-- JS将自动填充这里 -->
+    </div>
+
+    <div class="section-title" style="margin-top:15px;">新人特惠 (限首单)</div>
+    <div class="product-list" id="new-list">
+         <!-- JS将自动填充这里 -->
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <span>首页</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">📂</div>
+            <span>分类</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">💬</div>
+            <span>消息</span>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">👤</div>
+            <span>我的</span>
+        </div>
+    </div>
+
+    <!-- 下单弹窗 -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal">
+            <h3>下单提示</h3>
+            <p>为了保证您的账号安全，本平台采用<b>人工派单模式</b>。<br><br>请点击下方按钮复制客服微信，发送您刚才选择的套餐名称。</p>
+            <div style="background:#f5f5f5; padding:10px; border-radius:8px; margin-bottom:15px; font-weight:bold; color:#333;" id="copyText">a192uu91</div>
+            <button class="modal-btn" onclick="copyAndClose()">一键复制微信并下单</button>
+        </div>
+    </div>
+
+    <script>
+        // 配置数据：您可以随时在这里修改商品
+        const products = [
+            { title: "地铁逃生·旧封锁区【保底300万】", price: "25.00", tag:"热销", imgText:"地铁配图1" },
+            { title: "苏尔南·高级护航【包出金条x2】", price: "68.00", tag:"推荐", imgText:"苏尔南配图" },
+            { title: "全图清图·带满编队【安全无封号】", price: "128.00", tag:"专业", imgText:"全图清理" },
+            { title: "单人护航·KD维护【指定打手】", price: "45.00", tag:"高效", imgText:"KD维护" },
+            { title: "新手体验·普通图【送基础甲】", price: "9.90", tag:"福利", imgText:"新手福利" },
+            { title: "至尊VIP·包月无限次【优先派单】", price: "888.00", tag:"尊享", imgText:"VIP服务" }
+        ];
+
+        const newProducts = [
+            { title: "新人首单·普通图体验", price: "5.00", tag:"新人", imgText:"新人专享" },
+            { title: "组队开黑·四人车队", price: "39.90", tag:"组队", imgText:"四人车队" }
+        ];
+
+        // 渲染函数
+        function renderList(data, containerId) {
+            const container = document.getElementById(containerId);
+            let html = '';
+            data.forEach(item => {
+                html += `
+                <div class="card">
+                    <div class="card-img">
+                        ${item.imgText}
+                        <span class="tag ${item.tag === '热销' || item.tag === '推荐' ? 'tag-hot' : ''}">${item.tag}</span>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-tags">随时退款</div>
+                        <div class="card-bottom">
+                            <div class="price"><span>¥</span>${item.price}</div>
+                            <button class="buy-btn" onclick="openModal('${item.title}')">立即下单</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
