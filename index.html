@@ -1,92 +1,92 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>兰博俱乐部 - 核心系统</title>
-    <style>
-        /* --- 基础设置 & 解决不跟手 --- */
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        html, body {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #0f0f0f; color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow-x: hidden;
+<！doctype.card > 超文本标记语言>>
+<超文本标记语言 朗="zh-CN">
+<头>
+    <元 字符集="UTF-8">
+    <元 姓名="视口" 内容="宽度=设备宽度，初始比例=1.0，最大比例=1.0，用户可缩放=否">
+    <标题>兰博俱乐部 - 核心系统</标题>
+    <风格>
+/* --- 基础设置 & 解决不跟手 --- */
+*{箱体尺寸：边框框；概要：没有一个；-webkit-tap-highlight-color：透明的；}
+        超文本标记语言, 身体 {
+边缘：0；填充：0；宽容度：100%；高度：100%；
+背景色：#0f0f0f；颜色：#FFF；
+字体系列：-苹果-系统，BlinkMacSystemFont，"Segoe UI"，Roboto，无衬线；
+overflow-x：隐藏的；
             /* 关键优化：强制开启硬件加速，滑动如丝般顺滑 */
-            -webkit-overflow-scrolling: touch; 
-            overscroll-behavior: none;
+-webkit-溢出-滚动：触摸；
+            过卷行为: 没有一个;
         }
 
-        /* --- 布局容器 --- */
-        .app-container {
-            display: flex; flex-direction: column; height: 100vh;
+/* --- 布局容器 --- */
+。应用程序容器 {
+显示: 弯曲; 挠曲方向: 柱; 高度: 100vh;
         }
 
-        /* --- 顶部导航 --- */
-        .header {
-            height: 60px; background: #1a1a1a; border-bottom: 1px solid #333;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; flex-shrink: 0; z-index: 100;
+/* --- 顶部导航 --- */
+。页眉 {
+高度：60px；背景：#1a1a1a；下边框：1px固体#333；
+显示：弯曲；对齐项目：中心；justify-content：间距；
+填充：020PX；弯曲收缩：0；z指数：100；
         }
-        .logo { font-size: 18px; font-weight: bold; color: #ffd700; letter-spacing: 1px; }
-        .status-dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 5px #00ff00; }
+。标志{字体大小：18px；字体粗细：大胆的；颜色：#ffd700；字母间距：1PX；}
+。状态点{容忍度：8px；海拔：8px；背景：#00ff00；边缘半径：50%；箱形阴影：05px#00ff00；}
 
-        /* --- 内容区域 (可滚动) --- */
-        .content-area {
-            flex: 1; overflow-y: auto; padding: 20px;
-            position: relative;
-        }
+/* --- 内容区域 (可滚动) --- */
+。内容区{
+弯曲：1；溢流y：自动；填料：20px；
+}
+位置：相对；
 
-        /* --- 卡片样式 --- */
-        .card {
-            background: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px;
-            border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+/* --- 卡片样式 --- */
+位置：相对；
+背景：#1e1e1e；边框半径：12px；填充：20px；下边距：20px；
+边框：1px实心#333；框阴影：04px15px rgba(0,0,0,0.5);
         }
-        .card h2 { margin-top: 0; font-size: 18px; color: #eee; border-left: 4px solid #ffd700; padding-left: 10px; }
-        .card p { color: #aaa; font-size: 14px; line-height: 1.6; }
+.card h2{上边距：0；字体大小：18px；颜色：#Eee；左边框：4px实心#ffd700；左边填充：10px；}
+.card p{color：#aaa；font-size:14px；line-height:1.6；}
 
-        /* --- 按钮样式 --- */
-        .btn {
-            display: block; width: 100%; padding: 15px; margin-top: 10px;
-            background: linear-gradient(135deg, #ffd700, #ffa500);
-            color: #000; font-weight: bold; text-align: center; border-radius: 8px;
-            text-decoration: none; border: none; cursor: pointer;
-            transition: transform 0.1s;
+/* --- 按钮样式 --- */
+.btn{
+显示：块；宽度：100%；填充：15px；页边距顶部：10px；
+背景：线性梯度(135度，#ffd700，#ffa500)；
+颜色：#000；字体粗细：粗体；文本对齐：居中；边框半径：8px；
+文本修饰：无；边框：无；光标：指针；
+过渡：变换0.1s；
         }
-        .btn:active { transform: scale(0.98); opacity: 0.9; }
-        .btn-secondary { background: #333; color: #fff; border: 1px solid #555; }
+.btn：活动{变换：比例(0.98)；不透明度：0.9；}
+.btn-次要{background：#333；color：#fff；border:1px solid#555；}
         
-        /* --- 输入框样式 --- */
-        input[type="text"], input[type="password"] {
-            width: 100%; padding: 12px; background: #111; border: 1px solid #444;
-            color: #fff; border-radius: 6px; margin-bottom: 10px; font-size: 16px;
+/* --- 输入框样式 --- */
+输入[type="text"]，输入[type="password"]{
+宽度：100%；填充：12px；背景：#111；边框：1px实心#444；
+颜色：#FFF；边框半径：6px；底边距：10px；字体大小：16px；
         }
 
-        /* --- 隐藏/显示控制 --- */
-        .hidden { display: none !important; }
+/* --- 隐藏/显示控制 --- */
+.hidden{display:none！important；}
         
-        /* --- 管理员面板特效 --- */
-        .admin-badge {
-            background: #ff4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px;
+/* --- 管理员面板特效 --- */
+.admin-badge{
+背景：#ff4444；颜色：白色；填充：2px8px；边框半径：4px；字体大小：12px；左边距：10px；
         }
-    </style>
-</head>
-<body>
+</风格></风格>
+</头>头>
+<身体>身体>
 
-<div class="app-container">
-    <!-- 顶部 -->
-    <div class="header">
-        <div class="logo">LAMBORGHINI CLUB <span id="admin-tag" class="admin-badge hidden">ADMIN</span></div>
-        <div class="status-dot"></div>
-    </div>
+<div 班级="应用容器">div class="app-container">
+<! -- 顶部 --><! -- 顶部 -->
+<div 班级="页眉"><div 班级="页眉">
+<div 班级="徽标">兰博基尼俱乐部<跨度 身份标识="admin-tag"班级="管理员徽章已隐藏">管理员</跨度></div><div 班级="徽标">LAMBORGHINI CLUB<跨度 身份标识="admin-tag" 班级="管理员徽章已隐藏">管理员</跨度></div>
+<div 班级="状态点"></div><div 班级="状态点"></div>
+</div></div>
 
-    <!-- 内容区 -->
-    <div class="content-area">
+<! -- 内容区 --><! -- 内容区 -->
+<div 班级="内容区域"><div 班级="内容区域">
         
-        <!-- 1. 登录/绑定 界面 -->
-        <div id="login-section" class="card">
-            <h2>🔐 设备绑定与验证</h2>
-            <p>本系统采用设备指纹技术。首次输入有效卡密将自动绑定当前设备。</p>
+<! -- 1. 登录/绑定 界面 --><! -- 1. 登录/绑定 界面 -->
+<div 身份标识="登录部分"班级="卡"><div 身份标识="登录部分" 班级="卡">
+<H2>🔐 设备绑定与验证</H2><H2>🔐 设备绑定与验证</H2>
+            <p>本系统采用设备指纹技术。首次输入有效卡密将自动绑定当前设备。</p><p>本系统采用设备指纹技术。首次输入有效卡密将自动绑定当前设备。</p>
             <input type="text" id="key-input" placeholder="请输入您的专属卡密...">
             <button class="btn" onclick="verifyKey()">立即激活 / 登录</button>
             <p style="font-size:12px; color:#666; margin-top:10px;">* 第一个成功激活的设备将自动成为超级管理员。</p>
