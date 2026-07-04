@@ -3,179 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>兰博护航 - 官方指定收米通道</title>
+    <title>LAMBO CLUB - 核心权限系统</title>
     <style>
-        /* 全局样式 */
-        :root { --primary: #ffcc00; --bg: #0a0a0a; --card-bg: #161616; --text: #ffffff; }
-        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; padding-bottom: 50px; }
+        /* 全局重置 */
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        body { background-color: #050505; color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100vh; overflow-x: hidden; }
 
-        /* 顶部跑马灯 */
-        .marquee { background: rgba(255, 204, 0, 0.1); color: var(--primary); padding: 8px 0; font-size: 13px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid rgba(255, 204, 0, 0.2); }
-        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 15s linear infinite; }
-        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        /* 头部品牌区 */
-        .header { text-align: center; padding: 40px 20px 20px; }
-        .logo-text { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--primary); text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); margin-bottom: 5px; }
-        .sub-text { font-size: 12px; color: #666; letter-spacing: 1px; }
-
-        /* 核心操作区 */
-        .action-card { background: var(--card-bg); margin: 20px; padding: 25px; border-radius: 12px; border: 1px solid #333; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .status-badge { display: inline-block; background: rgba(0, 255, 0, 0.1); color: #00ff00; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; border: 1px solid rgba(0, 255, 0, 0.3); }
-        
-        /* 一键加微信按钮 */
-        .copy-btn {
-            background: linear-gradient(135deg, #ffcc00 0%, #ffaa00 100%);
-            color: #000; font-weight: bold; font-size: 18px;
-            width: 100%; padding: 15px; border: none; border-radius: 8px;
-            cursor: pointer; margin-top: 10px;
-            box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
-            transition: transform 0.1s;
+        /* --- 登录界面样式 (保留原汁原味) --- */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 20px;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
         }
-        .copy-btn:active { transform: scale(0.98); }
+        .logo-area { text-align: center; margin-bottom: 40px; }
+        .logo-title { font-size: 32px; font-weight: 900; color: #ffcc00; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
+        .logo-sub { font-size: 12px; color: #666; letter-spacing: 1px; }
 
-        /* 价格/打手列表 */
-        .list-container { margin: 0 20px; }
-        .list-title { font-size: 16px; color: #888; margin-bottom: 10px; border-left: 3px solid var(--primary); padding-left: 10px; }
-        .item-card { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2a2a2a; }
-        .item-name { font-weight: bold; font-size: 15px; }
-        .item-price { color: var(--primary); font-weight: bold; }
-        .item-status { font-size: 12px; padding: 2px 6px; border-radius: 4px; }
-        .status-on { background: rgba(0, 255, 0, 0.1); color: #00ff00; }
-        .status-off { background: rgba(255, 0, 0, 0.1); color: #ff4444; }
+        .input-group { width: 100%; max-width: 320px; margin-bottom: 20px; }
+        .input-field {
+            width: 100%; padding: 15px; background: #111; border: 1px solid #333;
+            color: #fff; font-size: 14px; border-radius: 4px; transition: 0.3s;
+        }
+        .input-field:focus { border-color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.2); }
 
-        /* 隐藏的管理员入口 */
-        .admin-trigger { text-align: center; margin-top: 50px; opacity: 0.3; font-size: 12px; color: #444; cursor: pointer; }
+        .btn-login {
+            width: 100%; max-width: 320px; padding: 15px; background: linear-gradient(90deg, #ffcc00, #ff9900);
+            border: none; color: #000; font-weight: bold; font-size: 16px; border-radius: 4px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3); margin-bottom: 20px;
+        }
+        .btn-login:active { transform: scale(0.98); }
+
+        /* 新增：游客通道入口 */
+        .guest-entry { font-size: 12px; color: #444; text-decoration: underline; cursor: pointer; margin-top: 10px; }
+        .guest-entry:hover { color: #ffcc00; }
+
+        /* --- 主界面样式 (登录后或游客进入后显示) --- */
+        #main-app { display: none; padding: 20px; padding-bottom: 80px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header-banner {
+            background: linear-gradient(45deg, #111, #222); border: 1px solid #333;
+            padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;
+        }
+        .marquee { color: #ffcc00; font-size: 14px; white-space: nowrap; overflow: hidden; }
+
+        .card { background: #111; border: 1px solid #222; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .card h3 { color: #fff; font-size: 16px; margin-bottom: 10px; border-left: 3px solid #ffcc00; padding-left: 10px; }
         
-        /* 弹窗样式 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
-        .modal-content { background: #222; padding: 20px; border-radius: 10px; width: 80%; max-width: 300px; border: 1px solid #444; }
-        .modal input { width: 100%; padding: 10px; margin: 10px 0; background: #111; border: 1px solid #444; color: white; border-radius: 5px; }
-        .modal button { width: 100%; padding: 10px; background: var(--primary); border: none; border-radius: 5px; font-weight: bold; }
+        .wechat-btn {
+            display: block; width: 100%; padding: 12px; background: #07c160;
+            color: #fff; text-align: center; text-decoration: none; border-radius: 4px;
+            font-weight: bold; margin-top: 10px;
+        }
 
-        /* 提示框 */
-        .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; display: none; z-index: 200; }
+        /* 简单的底部导航 */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0a0a;
+            border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 10px 0;
+        }
+        .nav-item { color: #666; font-size: 12px; text-align: center; }
+        .nav-item.active { color: #ffcc00; }
+
+        /* 隐藏的管理员面板 */
+        #admin-panel { display: none; border: 1px dashed #ffcc00; padding: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <!-- 跑马灯 -->
-    <div class="marquee">
-        <span>🔥 兰博护航 v10.5 正式上线 | 纯绿手工 | 封号包赔 | 认准唯一指定收米微信：a192uu91 | 拒绝暴力挂，安全第一 🔥</span>
-    </div>
+    <!-- 1. 登录界面 (门面) -->
+    <div id="login-screen">
+        <div class="logo-area">
+            <div class="logo-title">LAMBO CLUB</div>
+            <div class="logo-sub">核心权限管理系统 v6.0 (源码加密版)</div>
+        </div>
 
-    <!-- 品牌头 -->
-    <div class="header">
-        <div class="logo-text">LAMBO CLUB</div>
-        <div class="sub-text">高端 · 稳定 · 隐私保护</div>
-    </div>
+        <div class="input-group">
+            <input type="text" id="admin-code" class="input-field" placeholder="请输入代号 (管理员必填)">
+        </div>
+        <div class="input-group">
+            <input type="password" id="admin-key" class="input-field" placeholder="请输入密钥 (管理员必填)">
+        </div>
 
-    <!-- 核心收米区 -->
-    <div class="action-card">
-        <div class="status-badge">● 系统运行正常</div>
-        <h3 style="margin-bottom: 10px;">立即开启护航服务</h3>
-        <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">点击下方按钮复制微信号，添加老板好友咨询</p>
-        <button class="copy-btn" onclick="copyWechat()">一键复制微信：a192uu91</button>
-    </div>
-
-    <!-- 实时打手列表 (模拟数据) -->
-    <div class="list-container">
-        <div class="list-title">当前在线打手状态</div>
+        <button class="btn-login" onclick="checkLogin()">安全登录</button>
         
-        <div class="item-card">
-            <div>
-                <div class="item-name">王牌打手 - 01号</div>
-                <div style="font-size: 12px; color: #666;">KD 8.0 | 擅长突击</div>
-            </div>
-            <div class="item-status status-on">空闲中</div>
-        </div>
-
-        <div class="item-card">
-            <div>
-                <div class="item-name">职业选手 - 05号</div>
-                <div style="font-size: 12px; color: #666;">KD 12.0 | 指挥位</div>
-            </div>
-            <div class="item-status status-off">服务中</div>
-        </div>
-
-        <div class="item-card">
-            <div>
-                <div class="item-name">资深陪玩 - 08号</div>
-                <div style="font-size: 12px; color: #666;">声音好听 | 情绪价值</div>
-            </div>
-            <div class="item-status status-on">空闲中</div>
-        </div>
+        <!-- 关键修改：给普通用户留的门 -->
+        <div class="guest-entry" onclick="enterAsGuest()">我是普通玩家，直接进入 ></div>
     </div>
 
-    <!-- 隐藏的老板入口 -->
-    <div class="admin-trigger" onclick="showAdminLogin()">v10.5 Admin Login</div>
+    <!-- 2. 主程序界面 (内容) -->
+    <div id="main-app">
+        <div class="header-banner">
+            <div style="font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 5px;">🔥 9.9保底1000万</div>
+            <div class="marquee">公告：官方唯一指定收米通道，谨防假冒... (此处可滚动)</div>
+        </div>
 
-    <!-- 管理员登录弹窗 -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <h4 style="color:white; text-align:center;">管理员验证</h4>
-            <input type="password" id="adminPass" placeholder="请输入管理密钥">
-            <button onclick="checkAdmin()">进入后台</button>
-            <div style="text-align:center; margin-top:10px; color:#666; font-size:12px;" onclick="closeAdmin()">取消</div>
+        <!-- 这里的內容所有人都能看到 -->
+        <div class="card">
+            <h3>💎 业务范围</h3>
+            <p style="color:#888; font-size:14px; line-height:1.6;">
+                - 高端局护航<br>
+                - 极速解封<br>
+                - 账号托管<br>
+                - 效率第一，不满意包退
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🚀 立即联系</h3>
+            <p style="color:#888; font-size:14px; margin-bottom:10px;">添加主管微信，备注“护航”</p>
+            <!-- 点击复制微信号 -->
+            <div class="wechat-btn" onclick="copyWechat()">一键复制微信号: a192uu91</div>
+        </div>
+
+        <!-- 只有管理员登录成功才会显示这块 -->
+        <div id="admin-panel">
+            <h3 style="color:#ffcc00; text-align:center;">⚙️ 管理员控制台</h3>
+            <p style="color:#fff; font-size:12px; text-align:center; margin:10px 0;">欢迎您，老板。在此处可更新打手列表。</p>
+            <button style="width:100%; padding:8px; background:#333; color:#fff; border:none; border-radius:4px;">发布新任务</button>
         </div>
     </div>
-
-    <!-- 复制成功提示 -->
-    <div id="toast" class="toast">微信号已复制！快去微信添加吧</div>
 
     <script>
-        // 您的微信号配置
-        const MY_WECHAT = "a192uu91";
-        // 您的管理员密码 (建议修改)
-        const ADMIN_PASSWORD = "888888"; 
+        // 配置区：在这里设置您的管理员密码
+        const TRUE_CODE = "admin";   // 您的代号
+        const TRUE_KEY = "888888";   // 您的密钥
 
-        // 复制微信号功能
+        function checkLogin() {
+            const code = document.getElementById('admin-code').value;
+            const key = document.getElementById('admin-key').value;
+
+            if (code === TRUE_CODE && key === TRUE_KEY) {
+                // 密码正确 -> 进管理员模式
+                alert("身份验证通过，欢迎回来老板！");
+                showMainApp(true); 
+            } else if (code === "" && key === "") {
+                // 如果没填 -> 提示
+                alert("请输入代号和密钥，或者点击下方【普通玩家】入口");
+            } else {
+                // 填错了 -> 拦截
+                alert("代号或密钥错误！无权访问管理系统。");
+            }
+        }
+
+        function enterAsGuest() {
+            // 游客模式 -> 只能看前台
+            showMainApp(false);
+        }
+
+        function showMainApp(isAdmin) {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            
+            const adminPanel = document.getElementById('admin-panel');
+            if (isAdmin) {
+                adminPanel.style.display = 'block'; // 显示管理后台
+            } else {
+                adminPanel.style.display = 'none';  // 隐藏管理后台
+            }
+        }
+
         function copyWechat() {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(MY_WECHAT).then(() => showToast());
-            } else {
-                let textArea = document.createElement("textarea");
-                textArea.value = MY_WECHAT;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-9999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast();
-                } catch (err) {
-                    alert("复制失败，请手动添加：" + MY_WECHAT);
-                }
-                document.body.removeChild(textArea);
-            }
-        }
-
-        // 显示提示框
-        function showToast() {
-            const toast = document.getElementById("toast");
-            toast.style.display = "block";
-            setTimeout(() => { toast.style.display = "none"; }, 2000);
-        }
-
-        // 管理员相关逻辑
-        function showAdminLogin() {
-            document.getElementById("adminModal").style.display = "flex";
-        }
-
-        function closeAdmin() {
-            document.getElementById("adminModal").style.display = "none";
-        }
-
-        function checkAdmin() {
-            const input = document.getElementById("adminPass").value;
-            if(input === ADMIN_PASSWORD) {
-                alert("验证通过！\n\n这里是后台管理区域。\n由于您是单机版，您可以在代码中直接修改打手数据。\n\n未来联网版将支持在线修改。");
-                closeAdmin();
-            } else {
-                alert("密钥错误！无权访问。");
-            }
+            const wx = "a192uu91";
+            navigator.clipboard.writeText(wx).then(() => {
+                alert("微信号 " + wx + " 已复制！请打开微信添加好友。");
+            }).catch(() => {
+                alert("复制失败，请手动添加：a192uu91");
+            });
         }
     </script>
 </body>
