@@ -2,298 +2,181 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>兰博和平精英护航 - 云端联网版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>兰博护航 - 官方指定收米通道</title>
     <style>
-        :root { --gold: #ffcc00; --dark-bg: #0a0a0a; --card-bg: #161616; --border: #2a2a2a; --danger: #ff4444; --success: #00ff00; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-        body { background: var(--dark-bg); color: #e0e0e0; font-family: -apple-system, sans-serif; margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
-        .marquee { background: #111; color: var(--gold); padding: 10px; font-size: 13px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid #333; position: sticky; top: 0; z-index: 50; }
-        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; }
+        /* 全局样式 */
+        :root { --primary: #ffcc00; --bg: #0a0a0a; --card-bg: #161616; --text: #ffffff; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; padding-bottom: 50px; }
+
+        /* 顶部跑马灯 */
+        .marquee { background: rgba(255, 204, 0, 0.1); color: var(--primary); padding: 8px 0; font-size: 13px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid rgba(255, 204, 0, 0.2); }
+        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 15s linear infinite; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #111; border-bottom: 1px solid #333; }
-        .brand { font-weight: bold; font-size: 18px; color: #fff; letter-spacing: 1px; cursor: pointer; user-select: none; }
-        .admin-badge { background: var(--gold); color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 11px; margin-left: 8px; display: none; }
-        .cloud-badge { background: rgba(0,255,0,0.1); color: var(--success); border: 1px solid rgba(0,255,0,0.3); padding: 2px 8px; border-radius: 4px; font-size: 10px; margin-left: 8px; display: flex; align-items: center; gap: 4px; }
-        .role-switch { background: transparent; border: 1px solid #555; color: #aaa; padding: 5px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; display: none; }
-        body.user-mode .header { justify-content: center; }
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 100px; }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .action-btn { background: var(--card-bg); border: 1px solid var(--border); color: #fff; padding: 18px 10px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.1s; }
-        .action-btn:active { transform: scale(0.95); filter: brightness(0.8); border-color: var(--gold); }
-        .action-btn i { font-size: 24px; display: block; margin-bottom: 8px; color: var(--gold); }
-        .action-btn span { font-size: 14px; font-weight: bold; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .card h3 { margin: 0 0 15px 0; color: #fff; border-left: 3px solid var(--gold); padding-left: 10px; font-size: 16px; display: flex; justify-content: space-between; align-items: center;}
-        .refresh-btn { font-size: 12px; color: var(--gold); background: transparent; border: 1px solid var(--gold); padding: 2px 8px; border-radius: 10px; cursor: pointer; }
-        .price-list { list-style: none; padding: 0; line-height: 2; color: #ccc; font-size: 14px; margin: 0; }
-        .price-list b { color: var(--gold); }
-        .hitman-list { list-style: none; padding: 0; margin: 0; }
-        .hitman-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #222; }
-        .hitman-item:last-child { border-bottom: none; }
-        .hitman-info { max-width: 45%; overflow: hidden; }
-        .hitman-name { font-weight: bold; color: #ddd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .hitman-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-        .status-tag { font-size: 11px; padding: 4px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-        .tag-free { color: var(--success); background: rgba(0,255,0,0.1); border: 1px solid rgba(0,255,0,0.3); }
-        .tag-busy { color: var(--danger); background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); }
-        .like-btn { background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.3); color: var(--danger); padding: 4px 10px; border-radius: 15px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
-        .like-btn.liked { background: var(--danger); color: #fff; cursor: default; }
-        .del-btn { background: transparent; border: none; color: #666; font-size: 16px; cursor: pointer; padding: 4px; }
-        .empty-tip { text-align: center; color: #555; padding: 30px 20px; font-size: 14px; border: 1px dashed #333; border-radius: 8px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-content { background: #1a1a1a; width: 85%; max-width: 400px; border-radius: 16px; border: 1px solid #333; overflow: hidden; animation: popIn 0.3s ease; }
-        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-header { padding: 15px 20px; background: #222; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #fff; }
-        .modal-body { padding: 25px 20px; text-align: center; }
-        .close-btn { background: none; border: none; color: #888; font-size: 24px; cursor: pointer; }
-        .form-input, .form-select { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 12px; outline: none; }
-        .btn-primary { width: 100%; background: var(--gold); border: none; padding: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; color: #000; transition: 0.2s; }
-        .btn-primary:disabled { background: #666; color: #999; cursor: not-allowed; }
-        .qr-img { max-width: 240px; width: 100%; border-radius: 12px; border: 3px solid #fff; display: block; margin: 0 auto; }
-        .qr-placeholder { width: 240px; height: 240px; background: #222; border: 2px dashed #555; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #888; margin: 0 auto; border-radius: 12px; }
-        .ai-float { position: fixed; bottom: 30px; right: 20px; width: 55px; height: 55px; background: linear-gradient(135deg, var(--gold), #ff9900); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 5px 20px rgba(255, 204, 0, 0.4); z-index: 998; cursor: pointer; border: none; }
-        .chat-panel { position: fixed; bottom: 0; left: 0; width: 100%; height: 75vh; background: #111; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1001; display: none; flex-direction: column; border-top: 1px solid #333; }
-        .chat-header { padding: 15px 20px; background: #1a1a1a; color: var(--gold); font-weight: bold; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #0f0f0f; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.6; }
-        .msg-ai { background: #222; color: #ddd; align-self: flex-start; border-bottom-left-radius: 4px; }
-        .msg-user { background: var(--gold); color: #000; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-input-area { padding: 15px; background: #1a1a1a; display: flex; gap: 10px; border-top: 1px solid #333; }
-        .chat-input { flex: 1; background: #000; border: 1px solid #333; color: #fff; padding: 12px 15px; border-radius: 25px; outline: none; }
-        .send-btn { background: var(--gold); border: none; padding: 0 20px; border-radius: 25px; font-weight: bold; color: #000; cursor: pointer; }
-        .hidden { display: none !important; }
-        .text-gold { color: var(--gold); }
+
+        /* 头部品牌区 */
+        .header { text-align: center; padding: 40px 20px 20px; }
+        .logo-text { font-size: 32px; font-weight: 900; letter-spacing: 2px; color: var(--primary); text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); margin-bottom: 5px; }
+        .sub-text { font-size: 12px; color: #666; letter-spacing: 1px; }
+
+        /* 核心操作区 */
+        .action-card { background: var(--card-bg); margin: 20px; padding: 25px; border-radius: 12px; border: 1px solid #333; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .status-badge { display: inline-block; background: rgba(0, 255, 0, 0.1); color: #00ff00; padding: 4px 10px; border-radius: 20px; font-size: 12px; margin-bottom: 15px; border: 1px solid rgba(0, 255, 0, 0.3); }
+        
+        /* 一键加微信按钮 */
+        .copy-btn {
+            background: linear-gradient(135deg, #ffcc00 0%, #ffaa00 100%);
+            color: #000; font-weight: bold; font-size: 18px;
+            width: 100%; padding: 15px; border: none; border-radius: 8px;
+            cursor: pointer; margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+            transition: transform 0.1s;
+        }
+        .copy-btn:active { transform: scale(0.98); }
+
+        /* 价格/打手列表 */
+        .list-container { margin: 0 20px; }
+        .list-title { font-size: 16px; color: #888; margin-bottom: 10px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .item-card { background: #1a1a1a; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #2a2a2a; }
+        .item-name { font-weight: bold; font-size: 15px; }
+        .item-price { color: var(--primary); font-weight: bold; }
+        .item-status { font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+        .status-on { background: rgba(0, 255, 0, 0.1); color: #00ff00; }
+        .status-off { background: rgba(255, 0, 0, 0.1); color: #ff4444; }
+
+        /* 隐藏的管理员入口 */
+        .admin-trigger { text-align: center; margin-top: 50px; opacity: 0.3; font-size: 12px; color: #444; cursor: pointer; }
+        
+        /* 弹窗样式 */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
+        .modal-content { background: #222; padding: 20px; border-radius: 10px; width: 80%; max-width: 300px; border: 1px solid #444; }
+        .modal input { width: 100%; padding: 10px; margin: 10px 0; background: #111; border: 1px solid #444; color: white; border-radius: 5px; }
+        .modal button { width: 100%; padding: 10px; background: var(--primary); border: none; border-radius: 5px; font-weight: bold; }
+
+        /* 提示框 */
+        .toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; display: none; z-index: 200; }
     </style>
 </head>
 <body>
-    <div class="marquee"><span>🔥 兰博护航：地铁9.9保底500万 | 经典模式10元起 | 黄金上星钻特价 | 严禁私下交易 | LB家族永不为奴 🔥</span></div>
+
+    <!-- 跑马灯 -->
+    <div class="marquee">
+        <span>🔥 兰博护航 v10.5 正式上线 | 纯绿手工 | 封号包赔 | 认准唯一指定收米微信：a192uu91 | 拒绝暴力挂，安全第一 🔥</span>
+    </div>
+
+    <!-- 品牌头 -->
     <div class="header">
-        <div style="display:flex; align-items:center;">
-            <span class="brand" id="brandLogo" onclick="handleLogoClick()">LAMBO CLUB</span>
-            <span id="adminBadge" class="admin-badge">👑 管理员</span>
-            <span class="cloud-badge">🟢 云端</span>
-        </div>
-        <button id="roleSwitchBtn" class="role-switch" onclick="toggleRole()">👁️ 模拟访客</button>
+        <div class="logo-text">LAMBO CLUB</div>
+        <div class="sub-text">高端 · 稳定 · 隐私保护</div>
     </div>
-    <div class="container">
-        <div id="adminPanel">
-            <div class="btn-grid">
-                <div class="action-btn" onclick="secureAction('financeModal')"><i>💰</i><span>财务中心</span></div>
-                <div class="action-btn" onclick="secureAction('addHitmanModal')"><i>➕</i><span>添加打手</span></div>
-                <div class="action-btn" onclick="alert('派单系统开发中')"><i>⚡</i><span>极速派单</span></div>
-                <div class="action-btn" onclick="clearData()"><i>🗑️</i><span>清空数据</span></div>
+
+    <!-- 核心收米区 -->
+    <div class="action-card">
+        <div class="status-badge">● 系统运行正常</div>
+        <h3 style="margin-bottom: 10px;">立即开启护航服务</h3>
+        <p style="font-size: 13px; color: #aaa; margin-bottom: 20px;">点击下方按钮复制微信号，添加老板好友咨询</p>
+        <button class="copy-btn" onclick="copyWechat()">一键复制微信：a192uu91</button>
+    </div>
+
+    <!-- 实时打手列表 (模拟数据) -->
+    <div class="list-container">
+        <div class="list-title">当前在线打手状态</div>
+        
+        <div class="item-card">
+            <div>
+                <div class="item-name">王牌打手 - 01号</div>
+                <div style="font-size: 12px; color: #666;">KD 8.0 | 擅长突击</div>
             </div>
+            <div class="item-status status-on">空闲中</div>
         </div>
-        <div class="card">
-            <h3>🎮 热门业务报价</h3>
-            <ul class="price-list">
-                <li>🔸 <b>地铁逃生：</b> 9.9元 保底500万物资</li>
-                <li>🔸 <b>经典模式：</b> 10元起 / 局 (KD包赢)</li>
-            </ul>
+
+        <div class="item-card">
+            <div>
+                <div class="item-name">职业选手 - 05号</div>
+                <div style="font-size: 12px; color: #666;">KD 12.0 | 指挥位</div>
+            </div>
+            <div class="item-status status-off">服务中</div>
         </div>
-        <div class="card">
-            <h3>🛡️ 待命打手列表 <button class="refresh-btn" onclick="fetchHitmen(true)">🔄 刷新</button></h3>
-            <ul id="hitmanList" class="hitman-list"></ul>
-            <div id="emptyTip" class="empty-tip">⚠️ 正在从云端获取数据...</div>
+
+        <div class="item-card">
+            <div>
+                <div class="item-name">资深陪玩 - 08号</div>
+                <div style="font-size: 12px; color: #666;">声音好听 | 情绪价值</div>
+            </div>
+            <div class="item-status status-on">空闲中</div>
         </div>
     </div>
 
-    <!-- 财务弹窗 (已自动填入微信号 a192uu91) -->
-    <div id="financeModal" class="modal-overlay" onclick="if(event.target===event.currentTarget)closeModal('financeModal')">
+    <!-- 隐藏的老板入口 -->
+    <div class="admin-trigger" onclick="showAdminLogin()">v10.5 Admin Login</div>
+
+    <!-- 管理员登录弹窗 -->
+    <div id="adminModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><span>💰 官方收款通道</span><button class="close-btn" onclick="closeModal('financeModal')">×</button></div>
-            <div class="modal-body">
-                <p class="text-gold" style="margin-bottom:15px;">请截图扫码支付，备注游戏ID</p>
-                <img src="IMG_20260704_110538.png" alt="收款码" class="qr-img" onerror="this.style.display='none'; document.getElementById('qrPlaceholder').style.display='flex'">
-                <div id="qrPlaceholder" class="qr-placeholder" style="display:none"><i style="font-size:40px;">🖼️</i><span>收款码未加载</span></div>
-                
-                <div style="margin-top:20px; padding:15px; background:rgba(255,204,0,0.1); border:1px dashed var(--gold); border-radius:8px;">
-                    <p style="color:#fff; margin:0 0 10px 0; font-size:13px;">付款后，请添加客服微信秒拉群：</p>
-                    <div style="display:flex; gap:10px; align-items:center; justify-content:center;">
-                        <span id="wxId" style="color:var(--gold); font-weight:bold; font-size:18px; letter-spacing:1px;">a192uu91</span>
-                        <button onclick="copyWx()" class="btn-primary" style="width:auto; padding:8px 15px; font-size:13px;">一键复制</button>
-                    </div>
-                </div>
-            </div>
+            <h4 style="color:white; text-align:center;">管理员验证</h4>
+            <input type="password" id="adminPass" placeholder="请输入管理密钥">
+            <button onclick="checkAdmin()">进入后台</button>
+            <div style="text-align:center; margin-top:10px; color:#666; font-size:12px;" onclick="closeAdmin()">取消</div>
         </div>
     </div>
 
-    <div id="addHitmanModal" class="modal-overlay" onclick="if(event.target===event.currentTarget)closeModal('addHitmanModal')">
-        <div class="modal-content">
-            <div class="modal-header"><span>➕ 录入新打手</span><button class="close-btn" onclick="closeModal('addHitmanModal')">×</button></div>
-            <div class="modal-body">
-                <input type="text" id="newHitmanName" class="form-input" placeholder="输入代号 (如: LB888)" maxlength="20">
-                <select id="newHitmanStatus" class="form-select">
-                    <option value="free">空闲 (可接单)</option>
-                    <option value="busy">忙碌 (对局中)</option>
-                </select>
-                <button id="addBtn" onclick="addHitmanCloud()" class="btn-primary">确认添加并同步</button>
-            </div>
-        </div>
-    </div>
-
-    <button class="ai-float" onclick="openChat()">🤖</button>
-    <div class="chat-panel" id="chatPanel">
-        <div class="chat-header"><span>🤖 兰博智能助手</span><button class="close-btn" onclick="closeChat()" style="color:#fff;">×</button></div>
-        <div class="chat-body" id="chatBody"><div class="msg msg-ai">老板好！我是兰博AI。</div></div>
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chatInput" placeholder="输入问题..." onkeypress="if(event.key==='Enter')sendMsg()">
-            <button class="send-btn" onclick="sendMsg()">发送</button>
-        </div>
-    </div>
+    <!-- 复制成功提示 -->
+    <div id="toast" class="toast">微信号已复制！快去微信添加吧</div>
 
     <script>
-        // ==========================================
-        // 🔥 核心配置区：请填入您在 Bmob 获取的密钥！
-        // ==========================================
-        const CONFIG = {
-            APP_ID: '请替换为您的AppID',       // 在这里填入 Application ID
-            API_KEY: '请替换为您的REST_API_Key', // 在这里填入 REST API Key
-            BASE_URL: 'https://api.bmob.cn/1/classes/Hitman'
-        };
+        // 您的微信号配置
+        const MY_WECHAT = "a192uu91";
+        // 您的管理员密码 (建议修改)
+        const ADMIN_PASSWORD = "888888"; 
 
-        let deviceId = localStorage.getItem('lambo_device_id') || ('dev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
-        localStorage.setItem('lambo_device_id', deviceId);
-        let masterDevice = localStorage.getItem('lambo_master_device');
-        if (!masterDevice) { localStorage.setItem('lambo_master_device', deviceId); masterDevice = deviceId; }
-        
-        let isTrueAdmin = (deviceId === masterDevice);
-        let isViewingAsUser = false;
-        let hitmen = [];
-        let likedHitmen = JSON.parse(localStorage.getItem('lambo_liked_hitmen')) || [];
-        let isProcessing = false; 
-
-        window.onload = () => { updateUI(); fetchHitmen(); setInterval(() => fetchHitmen(), 30000); };
-
-        async function cloudRequest(method, endpoint = '', body = null) {
-            // 如果没填密钥，直接拦截并提示
-            if (CONFIG.APP_ID.includes('请替换') || CONFIG.API_KEY.includes('请替换')) {
-                console.warn('未配置云端密钥，跳过网络请求');
-                return null;
-            }
-            const options = {
-                method: method,
-                headers: {
-                    'X-Bmob-Application-Id': CONFIG.APP_ID,
-                    'X-Bmob-REST-API-Key': CONFIG.API_KEY,
-                    'Content-Type': 'application/json'
-                }
-            };
-            if (body) options.body = JSON.stringify(body);
-            try {
-                const res = await fetch(CONFIG.BASE_URL + endpoint, options);
-                return await res.json();
-            } catch (e) { return null; }
-        }
-
-        async function fetchHitmen(showLoading = false) {
-            if (showLoading) document.getElementById('emptyTip').innerText = '🔄 正在刷新...';
-            const data = await cloudRequest('GET');
-            if (data && data.results) {
-                hitmen = data.results.map(item => ({ objectId: item.objectId, name: item.name, status: item.status, likes: item.likes || 0 }));
-                renderHitmen();
-            } else if (!data) {
-                // 降级处理：如果没有云端数据或没填密钥，显示本地提示
-                document.getElementById('emptyTip').innerText = '⚠️ 暂未连接云端，请添加打手或配置密钥';
-            }
-        }
-
-        async function addHitmanCloud() {
-            if (!isTrueAdmin || isViewingAsUser || isProcessing) return;
-            const name = document.getElementById('newHitmanName').value.trim();
-            const status = document.getElementById('newHitmanStatus').value;
-            if (!name) return alert('请输入代号！');
-
-            isProcessing = true;
-            const btn = document.getElementById('addBtn');
-            btn.disabled = true; btn.innerText = '⏳ 同步中...';
-
-            const res = await cloudRequest('POST', '', { name, status, likes: 0 });
-            if (res && res.objectId) {
-                closeModal('addHitmanModal');
-                document.getElementById('newHitmanName').value = '';
-                await fetchHitmen();
-            } else { 
-                alert('同步失败！请检查是否已填入正确的 AppID 和 API Key。'); 
-            }
-            
-            btn.disabled = false; btn.innerText = '确认添加并同步';
-            isProcessing = false;
-        }
-
-        async function deleteHitmanCloud(objectId) {
-            if (!isTrueAdmin || isViewingAsUser || isProcessing) return;
-            if (!confirm('确定删除？')) return;
-            isProcessing = true;
-            await cloudRequest('DELETE', '/' + objectId);
-            await fetchHitmen();
-            isProcessing = false;
-        }
-
-        async function toggleStatusCloud(index) {
-            if (!isTrueAdmin || isViewingAsUser || isProcessing) return;
-            isProcessing = true;
-            const h = hitmen[index];
-            const newStatus = h.status === 'free' ? 'busy' : 'free';
-            await cloudRequest('PUT', '/' + h.objectId, { status: newStatus });
-            await fetchHitmen();
-            isProcessing = false;
-        }
-
-        async function likeHitmanCloud(index) {
-            const h = hitmen[index];
-            if (likedHitmen.includes(h.objectId) || isProcessing) return;
-            isProcessing = true;
-            likedHitmen.push(h.objectId);
-            localStorage.setItem('lambo_liked_hitmen', JSON.stringify(likedHitmen));
-            await cloudRequest('PUT', '/' + h.objectId, { "likes": { "__op": "Increment", "amount": 1 } });
-            await fetchHitmen();
-            isProcessing = false;
-        }
-
-        async function clearData() {
-            if (!isTrueAdmin || isViewingAsUser || isProcessing) return alert('⚠️ 权限不足！');
-            if (!confirm('确定清空所有数据？！')) return;
-            isProcessing = true;
-            for (let h of hitmen) { await cloudRequest('DELETE', '/' + h.objectId); }
-            await fetchHitmen();
-            isProcessing = false;
-        }
-
-        function copyWx() {
-            const wxId = document.getElementById('wxId').innerText;
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(wxId).then(() => alert('✅ 微信号 a192uu91 已复制！快去微信添加吧！'));
+        // 复制微信号功能
+        function copyWechat() {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(MY_WECHAT).then(() => showToast());
             } else {
-                const input = document.createElement('input');
-                input.value = wxId;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
-                alert('✅ 微信号 a192uu91 已复制！快去微信添加吧！');
+                let textArea = document.createElement("textarea");
+                textArea.value = MY_WECHAT;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (err) {
+                    alert("复制失败，请手动添加：" + MY_WECHAT);
+                }
+                document.body.removeChild(textArea);
             }
         }
 
-        function updateUI() {
-            const show = isTrueAdmin && !isViewingAsUser;
-            document.getElementById('adminPanel').classList.toggle('hidden', !show);
-            document.getElementById('adminBadge').style.display = show ? 'inline-block' : 'none';
-            const btn = document.getElementById('roleSwitchBtn');
-            if (isTrueAdmin) { btn.style.display = 'inline-block'; btn.innerHTML = show ? '👁️ 模拟访客' : '🔙 返回管理'; } 
-            else { btn.style.display = 'none'; }
+        // 显示提示框
+        function showToast() {
+            const toast = document.getElementById("toast");
+            toast.style.display = "block";
+            setTimeout(() => { toast.style.display = "none"; }, 2000);
         }
-        function toggleRole() { isViewingAsUser = !isViewingAsUser; updateUI(); renderHitmen(); }
-        function handleLogoClick() { 
-            if(!isTrueAdmin) return;
-            if(confirm('确认重置管理员权限？')) { localStorage.removeItem('lambo_master_device'); location.reload(); }
-        }
-        function secureAction(id) { if(isTrueAdmin && !isViewingAsUser) openModal(id); else alert('⚠️ 越权警告！'); }
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function escapeHtml(text) { return text.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m])); }
 
-        function renderHitmen() {
-            const list = document.getElementById('hitmanList');
-            const emptyTip = docu
+        // 管理员相关逻辑
+        function showAdminLogin() {
+            document.getElementById("adminModal").style.display = "flex";
+        }
+
+        function closeAdmin() {
+            document.getElementById("adminModal").style.display = "none";
+        }
+
+        function checkAdmin() {
+            const input = document.getElementById("adminPass").value;
+            if(input === ADMIN_PASSWORD) {
+                alert("验证通过！\n\n这里是后台管理区域。\n由于您是单机版，您可以在代码中直接修改打手数据。\n\n未来联网版将支持在线修改。");
+                closeAdmin();
+            } else {
+                alert("密钥错误！无权访问。");
+            }
+        }
+    </script>
+</body>
+</html>
