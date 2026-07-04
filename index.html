@@ -3,163 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>兰博俱乐部 - 考核与功能</title>
+    <title>兰博俱乐部 - 核心系统</title>
     <style>
-        /* --- 核心优化：解决不跟手和卡顿 --- */
+        /* --- 基础设置 & 解决不跟手 --- */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #111; /* 深色背景 */
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            
-            /* 关键代码：开启硬件加速，让滑动如丝般顺滑 */
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #0f0f0f; color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+            /* 关键优化：强制开启硬件加速，滑动如丝般顺滑 */
             -webkit-overflow-scrolling: touch; 
             overscroll-behavior: none;
-            transform: translateZ(0);
         }
 
         /* --- 布局容器 --- */
-        .container {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+        .app-container {
+            display: flex; flex-direction: column; height: 100vh;
         }
 
-        /* --- 顶部标题栏 --- */
+        /* --- 顶部导航 --- */
         .header {
-            height: 60px;
-            background-color: #222;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid #333;
-            position: sticky; /* 吸顶效果 */
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            height: 60px; background: #1a1a1a; border-bottom: 1px solid #333;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; flex-shrink: 0; z-index: 100;
         }
+        .logo { font-size: 18px; font-weight: bold; color: #ffd700; letter-spacing: 1px; }
+        .status-dot { width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 5px #00ff00; }
 
-        .header h1 {
-            font-size: 18px;
-            margin: 0;
-            letter-spacing: 1px;
-            color: #f1c40f; /* 金色字体 */
-        }
-
-        /* --- 内容区域 --- */
-        .content {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto; /* 允许垂直滚动 */
+        /* --- 内容区域 (可滚动) --- */
+        .content-area {
+            flex: 1; overflow-y: auto; padding: 20px;
+            position: relative;
         }
 
         /* --- 卡片样式 --- */
         .card {
-            background-color: #1e1e1e;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            background: #1e1e1e; border-radius: 12px; padding: 20px; margin-bottom: 20px;
+            border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+        .card h2 { margin-top: 0; font-size: 18px; color: #eee; border-left: 4px solid #ffd700; padding-left: 10px; }
+        .card p { color: #aaa; font-size: 14px; line-height: 1.6; }
 
-        .card h2 {
-            margin-top: 0;
-            font-size: 16px;
-            color: #aaa;
-            border-left: 3px solid #f1c40f;
-            padding-left: 10px;
-        }
-
-        .status-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #ddd;
-        }
-
-        /* --- 按钮样式 (修复点击无效) --- */
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            display: block; /* 确保是块级元素，容易点击 */
-            width: 100%;
-            padding: 15px 0;
-            background: linear-gradient(45deg, #f1c40f, #d4ac0d);
-            color: #000;
-            text-align: center;
-            text-decoration: none; /* 去掉下划线 */
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            
-            /* 按钮点击反馈动画 */
+        /* --- 按钮样式 --- */
+        .btn {
+            display: block; width: 100%; padding: 15px; margin-top: 10px;
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #000; font-weight: bold; text-align: center; border-radius: 8px;
+            text-decoration: none; border: none; cursor: pointer;
             transition: transform 0.1s;
-            -webkit-tap-highlight-color: transparent; /* 去除点击高亮 */
+        }
+        .btn:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-secondary { background: #333; color: #fff; border: 1px solid #555; }
+        
+        /* --- 输入框样式 --- */
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 12px; background: #111; border: 1px solid #444;
+            color: #fff; border-radius: 6px; margin-bottom: 10px; font-size: 16px;
         }
 
-        .action-btn:active {
-            transform: scale(0.98); /* 点击时轻微缩小 */
-            opacity: 0.9;
-        }
-
-        /* --- 底部版权 --- */
-        .footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 12px;
-            color: #555;
+        /* --- 隐藏/显示控制 --- */
+        .hidden { display: none !important; }
+        
+        /* --- 管理员面板特效 --- */
+        .admin-badge {
+            background: #ff4444; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="app-container">
     <!-- 顶部 -->
     <div class="header">
-        <h1>兰博俱乐部</h1>
+        <div class="logo">LAMBORGHINI CLUB <span id="admin-tag" class="admin-badge hidden">ADMIN</span></div>
+        <div class="status-dot"></div>
     </div>
 
-    <!-- 主要内容 -->
-    <div class="content">
+    <!-- 内容区 -->
+    <div class="content-area">
         
-        <!-- 考核状态卡片 -->
-        <div class="card">
-            <h2>当前考核状态</h2>
-            <p class="status-text">
-                欢迎回来。您的账户目前处于<strong>观察期</strong>。<br>
-                请完成下方的每日任务以解锁更多权限。
-            </p>
+        <!-- 1. 登录/绑定 界面 -->
+        <div id="login-section" class="card">
+            <h2>🔐 设备绑定与验证</h2>
+            <p>本系统采用设备指纹技术。首次输入有效卡密将自动绑定当前设备。</p>
+            <input type="text" id="key-input" placeholder="请输入您的专属卡密...">
+            <button class="btn" onclick="verifyKey()">立即激活 / 登录</button>
+            <p style="font-size:12px; color:#666; margin-top:10px;">* 第一个成功激活的设备将自动成为超级管理员。</p>
         </div>
 
-        <!-- 任务列表 -->
-        <div class="card">
-            <h2>今日任务</h2>
-            <p class="status-text">1. 签到打卡 (已完成)<br>2. 群组互动 (0/5)</p>
+        <!-- 2. 管理员专用面板 (默认隐藏) -->
+        <div id="admin-panel" class="card hidden" style="border: 1px solid #ffd700;">
+            <h2>👑 管理员控制台</h2>
+            <p>欢迎回来，老大。在这里您可以生成新的卡密。</p>
+            <div style="background:#111; padding:10px; border-radius:6px; margin:10px 0;">
+                <p style="margin:0; color:#0f0;">当前状态：已绑定主设备</p>
+                <p style="margin:5px 0 0; color:#aaa;">设备ID：<span id="my-device-id">...</span></p>
+            </div>
+            <button class="btn" onclick="generateNewKey()">生成一张新卡密</button>
+            <div id="new-key-display" style="margin-top:10px; color:#ffd700; font-weight:bold; text-align:center;"></div>
         </div>
 
-        <!-- 功能按钮区 (已修复点击问题) -->
-        <div class="btn-group">
-            <!-- 注意：href="" 里面填你要跳转的网址 -->
-            <a href="https://www.baidu.com" class="action-btn">进入考核大厅</a>
-            <a href="#" class="action-btn" style="background: #333; color: #fff;">查看历史记录</a>
+        <!-- 3. 俱乐部核心功能区 (验证通过后显示) -->
+        <div id="main-content" class="hidden">
+            
+            <div class="card">
+                <h2>🏎️ 兰博考核通道</h2>
+                <p>点击下方二维码或链接进入考核群。只有通过考核的成员才能获得正式身份。</p>
+                <!-- 这里放你的链接 -->
+                <a href="https://你的考核链接.com" target="_blank" class="btn btn-secondary">进入考核大厅</a>
+            </div>
+
+            <div class="card">
+                <h2>🛠️ 辅助功能修复版</h2>
+                <p>针对上次反馈的卡顿问题进行了底层重构，现在操作更加跟手。</p>
+                <button class="btn">启动功能模块</button>
+            </div>
+
+            <div class="card">
+                <h2>📢 最新公告</h2>
+                <p>系统已升级至 v2.0，增加了设备锁功能，保障账号安全。</p>
+            </div>
+            
+            <br><br><br>
         </div>
 
-    </div>
-
-    <!-- 底部 -->
-    <div class="footer">
-        &copy; 2026 Lamborghini Club System
     </div>
 </div>
+
+<script>
+    // --- 简易本地数据库模拟 (利用浏览器缓存) ---
+    // 注意：这是纯前端模拟，真实环境需要后端，但在GitHub Pages上这是最简单的方案
+    
+    const DB_KEYS = 'lamborghini_db_keys'; // 存储所有有效卡密
+    const DB_DEVICES = 'lamborghini_db_devices'; // 存储已绑定的设备
+    const MY_DEVICE_ID = getDeviceId(); // 获取当前手机的一个唯一标识
+
+    // 初始化：如果没有数据，先写入一个默认的“上帝卡密”
+    function initDB() {
+        if (!localStorage.getItem(DB_KEYS)) {
+            // 预设一个初始卡密，你可以把这个发给第一个想测试的人，或者自己先用
+            localStorage.setItem(DB_KEYS, JSON.stringify(["VIP888", "ADMIN001"]));
+        }
+    }
+
+    // 获取设备ID (简单模拟)
+    function getDeviceId() {
+        let id = localStorage.getItem('my_device_id');
+        if (!id) {
+            id = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            localStorage.setItem('my_device_id', id);
+        }
+        return id;
+    }
+
+    // 页面加载时检查状态
+    window.onload = function() {
+        initDB();
+        checkLoginStatus();
+    };
+
+    // 检查是否已登录
+    function checkLoginStatus() {
+        const devices = JSON.parse(localStorage.getItem(DB_DEVICES) || "{}");
+        
+        // 情况1：当前设备已绑定
+        if (devices[MY_DEVICE_ID]) {
+            showMainInterface(devices[MY_DEVICE_ID]);
+        } 
+        // 情况2：未绑定，显示登录框
+        else {
+            document.getElementById('login-section').classList.remove('hidden');
+        }
+    }
+
+    // 验证卡密逻辑
+    function verifyKey() {
+        const inputKey = document.getElementById('key-input').value.trim();
+        const validKeys = JSON.parse(localStorage.getItem(DB_KEYS) || "[]");
+        const devices = JSON.parse(localStorage.getItem(DB_DEVICES) || "{}");
+
+        // 1. 检查卡密是否存在
+        const keyIndex = validKeys.indexOf(inputKey);
+        
+        if (keyIndex > -1) {
+            // 卡密有效！
+            
+            // 2. 判定是否为管理员 (如果是列表里的第一个，或者是特定的卡密)
+            // 这里简化逻辑：只要卡密有效，且目前没有任何设备绑定过，那他就是管理员
+            // 或者你可以指定：如果输入的是 "VIP888"，就是管理员
+            
+            let role = 'member';
+            const allDevicesCount = Object.keys(devices).length;
+
+            // 逻辑：如果是世界上第一个激活的人，或者用的是特定管理卡密
+            if (allDevicesCount === 0 || inputKey === 'VIP888') {
+                role = 'admin';
+            }
+
+            // 3. 绑定设备
+            devices[MY_DEVICE_ID] = {
+                role: role,
+                keyUsed: inputKey,
+                date: new Date().toLocaleDateString()
+            };
+            localStorage.setItem(DB_DEVICES, JSON.stringify(devices));
+
+            // 4. (可选) 消耗掉卡密，让它只能用一次
+            // validKeys.splice(keyIndex, 1);
+            // localStorage.setItem(DB_KEYS, JSON.stringify(validKeys));
+
+            alert("激活成功！身份：" + (role === 'admin' ? "超级管理员" : "普通会员"));
+            checkLoginStatus(); // 刷新界面
+
+        } else {
+            alert("❌ 卡密无效，请联系管理员获取。");
+        }
+    }
+
+    // 显示主界面
+    function showMainInterface(userData) {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+
+        // 如果是管理员
+        if (userData.role === 'admin') {
+            document.getElementById('admin-tag').classList.remove('hidden');
+            document.getElementById('admin-panel').classList.remove('hidden');
+            document.getElementById('my-device-id').innerText = MY_DEVICE_ID;
+        }
+    }
+
+    // 管理员功能：生成新卡密
+    function generateNewKey() {
+        const newKey = 'LB-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        const validKeys = JSON.parse(localStorage.getItem(DB_KEYS) || "[]");
+        validKeys.push(newKey);
+        localStorage.setItem(DB_KEYS, JSON.stringify(validKeys));
+        
+        document.getElementById('new-key-display').innerText = "生成成功：" + newKey;
+        
+        // 简单的复制到剪贴板提示
+        alert("新卡密已生成并保存到系统：\n" + newKey + "\n(请复制上方字符)");
+    }
+</script>
 
 </body>
 </html>
