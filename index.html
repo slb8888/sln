@@ -5,325 +5,304 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>兰博俱乐部 - 核心系统</title>
     <style>
-        /* --- 基础设置 & 解决不跟手 --- */
         * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
         html, body {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #0f0f0f; color: #fff;
+            margin: 0; padding: 0; width: 100%; min-height: 100vh;
+            background: #0a0a0a; color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow-x: hidden;
-            /* 关键优化：开启硬件加速 */
             -webkit-overflow-scrolling: touch;
-            transform: translateZ(0);
         }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        
+        /* 标题 */
+        .logo { text-align: center; margin: 30px 0; }
+        .logo h1 { 
+            font-size: 26px; letter-spacing: 2px; margin: 0;
+            background: linear-gradient(90deg, #ffd700, #ff8c00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .logo p { color: #666; font-size: 12px; margin-top: 5px; }
 
-        /* --- 界面布局 --- */
-        .container {
-            width: 100%; min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px;
-            transition: opacity 0.3s ease;
+        /* 卡片 */
+        .card {
+            background: #161616; border-radius: 12px; padding: 25px;
+            margin-bottom: 15px; border: 1px solid #222;
+        }
+        .card h2 { font-size: 16px; margin: 0 0 15px; color: #eee; }
+
+        /* 表单 */
+        input {
+            width: 100%; padding: 14px; background: #0f0f0f;
+            border: 1px solid #333; border-radius: 8px;
+            color: #fff; font-size: 15px; margin-bottom: 12px;
+        }
+        input:focus { border-color: #ffd700; }
+
+        /* 按钮 */
+        .btn {
+            width: 100%; padding: 14px; border: none; border-radius: 8px;
+            font-size: 15px; font-weight: bold; cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:active { opacity: 0.8; }
+        .btn-gold { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; }
+        .btn-dark { background: #222; color: #aaa; margin-top: 10px; }
+        .btn-sm { width: auto; padding: 8px 16px; font-size: 13px; display: inline-block; }
+
+        /* 状态提示 */
+        .msg { text-align: center; font-size: 13px; min-height: 20px; margin-top: 10px; }
+        .msg-ok { color: #4cd964; }
+        .msg-err { color: #ff3b30; }
+
+        /* 列表 */
+        .list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid #222; font-size: 13px;
+        }
+        .list-item:last-child { border-bottom: none; }
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+        .tag-used { background: #333; color: #888; }
+        .tag-new { background: rgba(255,215,0,0.15); color: #ffd700; }
+
+        /* 公告 */
+        .notice { 
+            background: rgba(255,215,0,0.08); border-left: 3px solid #ffd700;
+            padding: 12px 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px;
+            font-size: 13px; color: #ccc; line-height: 1.6;
         }
 
         .hidden { display: none !important; }
-
-        /* --- 卡片样式 --- */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 30px 20px;
-            width: 100%; max-width: 400px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        h1 { margin-bottom: 10px; font-size: 24px; letter-spacing: 1px; }
-        p { color: #aaa; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
-
-        /* --- 输入框与按钮 --- */
-        input {
-            width: 100%; padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #fff; font-size: 16px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        input:focus { border-color: #007aff; }
-
-        button {
-            width: 100%; padding: 15px;
-            background: linear-gradient(135deg, #007aff, #0056b3);
-            border: none; border-radius: 8px;
-            color: #fff; font-size: 16px; font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-        button:active { transform: scale(0.98); }
-
-        /* --- 状态提示 --- */
-        .status-msg {
-            margin-top: 15px; font-size: 13px; min-height: 20px;
-        }
-        .success { color: #4cd964; }
-        .error { color: #ff3b30; }
-
-        /* --- 管理员面板特有样式 --- */
-        .admin-panel { text-align: left; }
-        .admin-panel h2 { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .info-label { color: #888; }
-        .info-value { color: #fff; font-family: monospace; }
-
-        .gen-box {
-            background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-top: 20px;
-        }
-        .generated-key {
-            word-break: break-all; color: #007aff; font-family: monospace; margin: 10px 0; display: block;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 1. 加载/验证界面 -->
-    <div id="loading-screen" class="container">
+<div class="container">
+    <div class="logo">
+        <h1>LAMBORGHINI CLUB</h1>
+        <p>核心权限管理系统 v3.0</p>
+    </div>
+
+    <!-- ========== 登录页 ========== -->
+    <div id="page-login">
         <div class="card">
-            <h1>系统验证中...</h1>
-            <p>正在获取设备指纹与安全环境检测</p>
-            <div id="loading-text" style="color:#007aff">初始化核心组件...</div>
+            <h2>🔐 身份验证</h2>
+            <input type="text" id="login-user" placeholder="账号 / 卡密" autocomplete="off">
+            <input type="password" id="login-pass" placeholder="密码">
+            <button class="btn btn-gold" onclick="doLogin()">登 录</button>
+            <div id="login-msg" class="msg"></div>
         </div>
+        <p style="text-align:center;color:#444;font-size:11px;">首次访问请使用默认管理员账号登录</p>
     </div>
 
-    <!-- 2. 登录/注册界面 (未绑定设备时显示) -->
-    <div id="login-screen" class="container hidden">
+    <!-- ========== 管理员后台 ========== -->
+    <div id="page-admin" class="hidden">
+        <!-- 公告编辑 -->
         <div class="card">
-            <h1>设备未授权</h1>
-            <p>当前设备未被系统识别。<br>请输入管理员发放的激活卡密进行绑定。</p>
-            
-            <input type="text" id="key-input" placeholder="请输入卡密 (例如: LB-8888)" autocomplete="off">
-            <button onclick="activateDevice()">激活设备</button>
-            
-            <div id="login-msg" class="status-msg"></div>
+            <h2>📢 发布公告</h2>
+            <input type="text" id="admin-notice-input" placeholder="输入公告内容...">
+            <button class="btn btn-gold btn-sm" onclick="saveNotice()">发布</button>
         </div>
-    </div>
 
-    <!-- 3. 管理员后台 (仅第一个绑定的管理员可见) -->
-    <div id="admin-screen" class="container hidden">
-        <div class="card admin-panel">
-            <h2>👑 管理员控制台</h2>
-            <div class="info-row">
-                <span class="info-label">当前身份：</span>
-                <span class="info-value" style="color:#ffd700">超级管理员 (Master)</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">设备指纹：</span>
-                <span class="info-value" id="admin-did">获取中...</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">系统状态：</span>
-                <span class="info-value" style="color:#4cd964">运行正常</span>
-            </div>
-
-            <div class="gen-box">
-                <p style="margin:0 0 10px 0; text-align:left;">生成新用户卡密：</p>
-                <button onclick="generateKey()" style="background: #333; border:1px solid #555;">生成随机卡密</button>
-                <span id="new-key-display" class="generated-key"></span>
-                <button onclick="copyKey()" style="background: #007aff; margin-top:5px; font-size:14px; padding:10px;">复制卡密</button>
-            </div>
-            
-            <button onclick="logout()" style="margin-top:20px; background:transparent; border:1px solid #ff3b30; color:#ff3b30;">清除本地缓存 (测试用)</button>
-        </div>
-    </div>
-
-    <!-- 4. 普通用户大厅 (普通用户验证后进入) -->
-    <div id="user-screen" class="container hidden">
+        <!-- 生成卡密 -->
         <div class="card">
-            <h1>考核大厅</h1>
-            <p>欢迎回来，授权用户。</p>
-            <div class="info-row">
-                <span class="info-label">您的设备ID：</span>
-                <span class="info-value" id="user-did" style="font-size:10px;">...</span>
+            <h2>🎫 卡密管理</h2>
+            <button class="btn btn-gold" onclick="genKey()">生成新卡密</button>
+            <div id="new-key-box" class="msg msg-ok" style="margin:15px 0;word-break:break-all;"></div>
+            
+            <div style="margin-top:15px;">
+                <h3 style="font-size:13px;color:#888;margin-bottom:10px;">已生成卡密列表</h3>
+                <div id="key-list"></div>
             </div>
-            <br>
-            <button onclick="alert('这里跳转到真正的考核链接！')">开始考核任务</button>
-            <button onclick="logout()" style="margin-top:10px; background:transparent; border:1px solid #555; color:#888;">退出登录</button>
         </div>
+
+        <button class="btn btn-dark" onclick="logout()">退出登录</button>
     </div>
 
-    <script>
-        // --- 核心逻辑 ---
+    <!-- ========== 用户大厅 ========== -->
+    <div id="page-user" class="hidden">
+        <div id="user-notice" class="notice hidden"></div>
 
-        // 模拟数据库 (实际项目中应连接后端，这里用 LocalStorage 模拟持久化)
-        const DB_KEYS = 'lamborghini_admin_device'; // 存储管理员的设备指纹
-        const DB_USERS = 'lamborghini_valid_users'; // 存储已激活的用户卡密
-        
-        let currentDeviceId = '';
+        <div class="card">
+            <h2>🏎️ 考核通道</h2>
+            <p style="color:#888;font-size:13px;margin-bottom:15px;">完成以下考核任务获取正式成员资格</p>
+            
+            <div style="margin-bottom:15px;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:5px;">
+                    <span>考核进度</span><span>0%</span>
+                </div>
+                <div style="height:6px;background:#222;border-radius:3px;overflow:hidden;">
+                    <div style="width:0%;height:100%;background:#ffd700;border-radius:3px;transition:width 1s;"></div>
+                </div>
+            </div>
 
-        // 1. 生成/获取设备指纹 (无需权限，基于浏览器特征)
-        function getDeviceFingerprint() {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.textBaseline = "top";
-            ctx.font = "14px 'Arial'";
-            ctx.textBaseline = "alphabetic";
-            ctx.fillStyle = "#f60";
-            ctx.fillRect(125,1,62,20);
-            ctx.fillStyle = "#069";
-            ctx.fillText("LamborghiniClub", 2, 15);
-            ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
-            ctx.fillText("LamborghiniClub", 4, 17);
-            
-            // 结合屏幕信息和 UserAgent 生成唯一 ID
-            const screenInfo = window.screen.width + "*" + window.screen.height + "*" + window.screen.colorDepth;
-            const ua = navigator.userAgent;
-            const mimeTypes = navigator.mimeTypes ? navigator.mimeTypes.length : 0;
-            
-            // 简单的哈希算法
-            const str = screenInfo + ua + mimeTypes + canvas.toDataURL();
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return "DEV-" + Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
+            <button class="btn btn-gold" onclick="alert('请配置真实考核链接')">进入考核大厅</button>
+        </div>
+
+        <div class="card">
+            <h2>🛠️ 功能模块</h2>
+            <div class="list-item"><span>辅助工具 v2.1</span><span style="color:#4cd964">可用</span></div>
+            <div class="list-item"><span>规则文档</span><span style="color:#888">只读</span></div>
+            <div class="list-item"><span>在线客服</span><span style="color:#ffd700">在线</span></div>
+        </div>
+
+        <button class="btn btn-dark" onclick="logout()">退出登录</button>
+    </div>
+</div>
+
+<script>
+// ===== 数据存储键名 =====
+const K_ADMIN = 'lambo_admin';      // 管理员账号信息
+const K_KEYS = 'lambo_keys';        // 卡密列表
+const K_NOTICE = 'lambo_notice';    // 公告
+const K_SESSION = 'lambo_session';  // 当前登录会话
+
+// ===== 初始化 =====
+window.onload = function() {
+    initAdmin();
+    checkSession();
+};
+
+// 初始化管理员（仅首次）
+function initAdmin() {
+    if (!localStorage.getItem(K_ADMIN)) {
+        // 默认管理员账号密码，你可以改成自己的
+        localStorage.setItem(K_ADMIN, JSON.stringify({
+            user: 'admin',
+            pass: 'admin888'
+        }));
+    }
+}
+
+// 检查登录状态
+function checkSession() {
+    const session = JSON.parse(localStorage.getItem(K_SESSION) || 'null');
+    if (!session) return showPage('page-login');
+
+    if (session.role === 'admin') {
+        loadAdminPanel();
+        showPage('page-admin');
+    } else if (session.role === 'user') {
+        loadUserPanel();
+        showPage('page-user');
+    } else {
+        showPage('page-login');
+    }
+}
+
+// ===== 登录逻辑 =====
+function doLogin() {
+    const user = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+    const msg = document.getElementById('login-msg');
+
+    if (!user || !pass) {
+        msg.className = 'msg msg-err';
+        msg.textContent = '请输入账号和密码';
+        return;
+    }
+
+    // 验证管理员
+    const admin = JSON.parse(localStorage.getItem(K_ADMIN));
+    if (user === admin.user && pass === admin.pass) {
+        saveSession({ role: 'admin', user: user });
+        msg.className = 'msg msg-ok';
+        msg.textContent = '管理员登录成功！';
+        setTimeout(() => { loadAdminPanel(); showPage('page-admin'); }, 500);
+        return;
+    }
+
+    // 验证卡密用户
+    const keys = JSON.parse(localStorage.getItem(K_KEYS) || '[]');
+    const matchedKey = keys.find(k => k.key === user && k.pass === pass);
+    
+    if (matchedKey) {
+        if (matchedKey.used) {
+            msg.className = 'msg msg-err';
+            msg.textContent = '该卡密已被使用！';
+            return;
         }
+        // 标记为已使用
+        matchedKey.used = true;
+        matchedKey.useTime = new Date().toLocaleString();
+        localStorage.setItem(K_KEYS, JSON.stringify(keys));
+        
+        saveSession({ role: 'user', key: user });
+        msg.className = 'msg msg-ok';
+        msg.textContent = '验证成功，正在进入...';
+        setTimeout(() => { loadUserPanel(); showPage('page-user'); }, 800);
+    } else {
+        msg.className = 'msg msg-err';
+        msg.textContent = '账号或密码错误';
+    }
+}
 
-        // 2. 初始化检查
-        window.onload = function() {
-            currentDeviceId = getDeviceFingerprint();
-            控制台.日志("当前设备指纹:", currentDeviceId);
+// ===== 管理员功能 =====
+function loadAdminPanel() {
+    renderKeyList();
+    const notice = localStorage.getItem(K_NOTICE) || '';
+    document.getElementById('admin-notice-input').value = notice;
+}
 
-            // 模拟网络延迟，显得更真实
-            setTimeout(()=>{
-                checkStatus();
-            }, 800);
-        };
+function genKey() {
+    const key = 'LB-' + Math.random().toString(36).substr(2,6).toUpperCase();
+    const pass = Math.random().toString(36).substr(2,6);
+    const keys = JSON.parse(localStorage.getItem(K_KEYS) || '[]');
+    keys.unshift({ key, pass, used: false, createTime: new Date().toLocaleString() });
+    localStorage.setItem(K_KEYS, JSON.stringify(keys));
+    
+    document.getElementById('new-key-box').textContent = '✅ 新卡密 → 账号: ' + key + ' | 密码: ' + pass;
+    renderKeyList();
+}
 
-        功能 checkStatus() {
-            Const adminDevice=localStorage.getitem(DB_KEYS);
-            Const MyKey=localStorage.getitem('my_activation_key'); // 本地存的自己的卡密
+function renderKeyList() {
+    const keys = JSON.parse(localStorage.getItem(K_KEYS) || '[]');
+    const box = document.getElementById('key-list');
+    if (keys.length === 0) {
+        box.innerHTML = '<div style="color:#444;font-size:13px;text-align:center;padding:10px;">暂无卡密</div>';
+        return;
+    }
+    box.innerHTML = keys.map(k => `
+        <div class="list-item">
+            <div>
+                <div style="color:#fff;">${k.key}</div>
+                <div style="color:#666;font-size:11px;">密码: ${k.pass}</div>
+            </div>
+            <span class="tag ${k.used ? 'tag-used' : 'tag-new'}">${k.used ? '已使用' : '未使用'}</span>
+        </div>
+    `).join('');
+}
 
-            // 情况 A: 系统还没主人 -> 自动成为管理员
-            如果 (!adminDevice) {
-                localStorage.setitem(DB_KEYS, currentDeviceId); // 写入管理员
-                showScreen('admin-screen');
-                文件.getElementById('admin-did').内部文本=currentDeviceId;
-                返回;
-            }
+function saveNotice() {
+    const text = document.getElementById('admin-notice-input').value.trim();
+    localStorage.setItem(K_NOTICE, text);
+    alert('公告已发布！');
+}
 
-            //情况B：我是管理员
-            如果 (adminDevice===currentDeviceId) {
-                showScreen('admin-screen');
-                文件.getElementById('admin-did').内部文本=currentDeviceId;
-                return;
-                    }
+// ===== 用户功能 =====
+function loadUserPanel() {
+    const notice = localStorage.getItem(K_NOTICE) || '';
+    if (notice) {
+        const el = document.getElementById('user-notice');
+        el.textContent = '📢 ' + notice;
+        el.classList.remove('hidden');
+    }
+}
 
-            // 情况 C: 我是普通用户，且本地有有效的卡密记录
-            if (myKey) {
-                ConstvalidUsers = JSON.parse(localStorage.getItem(DB_USERS) || '{}');
-                if (validUsers[myKey] && validUsers[myKey].deviceId === currentDeviceId) {
-                    showScreen('user-screen');
-                    document.getElementById('user-did').innerText = currentDeviceId;
-                    return;
-                        }
-                    }
+// ===== 通用工具 =====
+function saveSession(data) {
+    localStorage.setItem(K_SESSION, JSON.stringify(data));
+}
 
-            // 情况 D: 需要登录/激活
-            showScreen('login-screen');
-                }
+function logout() {
+    localStorage.removeItem(K_SESSION);
+    location.reload();
+}
 
-        // 3. 激活设备 (用户输入卡密)
-        功能 activateDevice() {
-            ConstinputKey = document.getElementById('key-input').value.trim();
-            Const味精 = document.getElementById('login-msg');
-            
-            if (!inputKey) {
-                msg.innerText = "请输入卡密";
-                msg.className = "status-msg error";
-                return;
-                    }
-
-            // 验证卡密是否存在于数据库中
-            ConstvalidUsers = JSON.parse(localStorage.getItem(DB_USERS) || '{}');
-            
-if(validUsers[inputKey]){if (validUsers[inputKey]) {
-                // 检查该卡密是否已经被其他设备使用了 (一卡一机)// 检查该卡密是否已经被其他设备使用了 (一卡一机)
-if(validUsers[inputKey].deviceId！==currentDeviceId){if (validUsers[inputKey].deviceId !== currentDeviceId) {
-msg.innerText = "该卡密已被其他设备绑定，无法重复使用！"；msg.innerText = "该卡密已被其他设备绑定，无法重复使用！";
-msg.className = "status-msg error"；msg.className = "status-msg error";
-返回；return;
-                        }
-
-                // 验证通过，保存本地状态// 验证通过，保存本地状态
-localStorage.setItem('my_activation_key'，inputKey)；localStorage.setItem('my_activation_key', inputKey);
-msg.innerText = "验证成功，正在进入..."；msg.innerText = "验证成功，正在进入...";
-msg.className = "status-msg success"；msg.className = "status-msg success";
-                
-setTimeout(() => {setTimeout(() => {
-showScreen('user-screen')；showScreen('user-screen');
-document.getElementById('user-did').innerText = currentDeviceId；document.getElementById('user-did').innerText = currentDeviceId;
-        }, 1000);        }, 1000);
-
-        }else{        } 其他 {
-msg.innerText = "卡密无效或不存在，请联系管理员！"；msg.innerText = "卡密无效或不存在，请联系管理员！";
-msg.className = "status-msg error"；msg.className = "status-msg error";
-                    }
-                }
-
-        // 4. 管理员功能：生成卡密// 4. 管理员功能：生成卡密
-函数generateKey(){功能 generateKey() {
-            // 生成格式：LB-XXXX-XXXX// 生成格式：LB-XXXX-XXXX
-常数randomPart = Math.random().function toString() { [native code] }(36).substring(2，6).toUpperCase()；常数随机部分 = Math.random().function toString() { [native code] }(36).substring(2, 6).toUpperCase();
-常数Newkey = "LB-" + randomPart + "-" + Date.now().function toString() { [native code] }().slice(-4)；常数纽基 = "LB-" + randomPart + "-" + Date.now().function toString() { [native code] }().slice(-4);
-            
-// 存入数据库 (标记为未绑定设备，或者绑定当前生成者的设备，这里逻辑是生成后发给别人)// 存入数据库 (标记为未绑定设备，或者绑定当前生成者的设备，这里逻辑是生成后发给别人)
-// 注意：这里的逻辑是，生成时并不绑定设备，等别人输入时才绑定。// 注意：这里的逻辑是，生成时并不绑定设备，等别人输入时才绑定。
-// 但为了防止同一个卡密给两个人用，我们在数据库里先占个位。// 但为了防止同一个卡密给两个人用，我们在数据库里先占个位。
-            
-ConstvalidUsers = JSON.parse(localStorage.getItem(DB_USERS) || '{}')；常数validUsers = JSON.parse(localStorage.getItem(DB_USERS) || '{}');
-validUsers[Newkey] = {validUsers[Newkey] = { 
-deviceID：空，//尚未绑定deviceId: null, // 尚未绑定
-createTime：新建日期().function toLocaleString() { [native code] }()createTime: 新的 Date().function toLocaleString() { [native code] }()
-                    };
-localStorage.setItem(DB_USERS，JSON.stringify(validUsers))；localStorage.setItem(DB_USERS, JSON.stringify(validUsers));
-
-文件。getElementById('new-key-display')。内部文本 = Newkey；document.getElementById('new-key-display').innerText = Newkey;
-                }
-
-函数copyKey(){功能 copyKey() {
-ConstkeyText = 文件。getElementById('new-key-display')。内部文本；ConstkeyText = document.getElementById('new-key-display').innerText;
-if(！keyText)返回；if(!keyText) return;
-            
-            // 兼容安卓和iOS的复制// 兼容安卓和iOS的复制
-const进口 = document.createElement('input')；常数输入 = document.createElement('input');
-input.value = keyText；输入.value = keyText;
-document.body.appendChild(input)；document.body.appendChild(input);
-input.select()；input.select();
-try{尝试 {
-document.execCommand('copy')；document.execCommand('copy');
-alert('加密已复制：' + keyText + '\n请发送给买家！')；alert('卡密已复制：' + keyText + '\n请发送给买家！');
-        }catch(err){        } catch (err) {
-alert('复制失败，请长按复制')；alert('复制失败，请长按复制');
-                    }
-document.body.removeChild(input)；document.body.removeChild(input);
-                }
-
-        // 辅助功能// 辅助功能
-函数showScreen(id){功能 showScreen(id) {
-文件。querySelectorAll('.container').forEach(el => el.classList.add('hidden'))；document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
-文件。getElementById(id).classList.remove('hidden')；document.getElementById(id).classList.remove('hidden');
-                }
-
-函数注销(){功能 logout() {
-            if(confirm('确定要清除本地登录状态吗？(管理员不会丢失权限，只需重新刷新)')) {if(confirm('确定要清除本地登录状态吗？(管理员不会丢失权限，只需重新刷新)')) {
-localStorage.removeItem('my_activation_key')；localStorage.removeItem('my_activation_key');
-location.reload()；location.reload();
-                    }
-                }
-    </脚本>
-    </身体>
-    </超文本标记语言>
+function showPage(id) {
+    ['page-login','page-admin','page-user'].forEach(p => {
+        document.getElementById(p).classList.toggle('hidden', p !== id);
+    });
+}
+</script>
+</body>
+</html>
