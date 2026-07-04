@@ -5,304 +5,216 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>兰博俱乐部 - 核心系统</title>
     <style>
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        html, body {
-            margin: 0; padding: 0; width: 100%; min-height: 100vh;
-            background: #0a0a0a; color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-overflow-scrolling: touch;
-        }
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        /* --- 基础重置与暗黑风格 --- */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { background: #0a0a0a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
         
-        /* 标题 */
-        .logo { text-align: center; margin: 30px 0; }
-        .logo h1 { 
-            font-size: 26px; letter-spacing: 2px; margin: 0;
-            background: linear-gradient(90deg, #ffd700, #ff8c00);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .logo p { color: #666; font-size: 12px; margin-top: 5px; }
+        /* --- 容器布局 --- */
+        .app-container { width: 100%; max-width: 420px; min-height: 100vh; background: #111; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        
+        /* --- 顶部导航 --- */
+        .header { padding: 20px; text-align: center; border-bottom: 1px solid #222; background: #0f0f0f; }
+        .logo { font-size: 24px; font-weight: 800; letter-spacing: 1px; background: linear-gradient(45deg, #007aff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
+        .subtitle { font-size: 12px; color: #666; }
 
-        /* 卡片 */
-        .card {
-            background: #161616; border-radius: 12px; padding: 25px;
-            margin-bottom: 15px; border: 1px solid #222;
-        }
-        .card h2 { font-size: 16px; margin: 0 0 15px; color: #eee; }
+        /* --- 公告栏 --- */
+        .notice-bar { background: rgba(0, 122, 255, 0.1); color: #007aff; padding: 10px 15px; font-size: 13px; display: flex; align-items: center; border-bottom: 1px solid #1a1a1a; }
+        .notice-icon { margin-right: 8px; font-weight: bold; }
 
-        /* 表单 */
-        input {
-            width: 100%; padding: 14px; background: #0f0f0f;
-            border: 1px solid #333; border-radius: 8px;
-            color: #fff; font-size: 15px; margin-bottom: 12px;
-        }
-        input:focus { border-color: #ffd700; }
+        /* --- 内容区域 --- */
+        .content { flex: 1; padding: 30px 20px; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* --- 表单样式 --- */
+        .form-group { margin-bottom: 20px; }
+        .input-box { width: 100%; background: #1c1c1e; border: 1px solid #333; padding: 14px; border-radius: 12px; color: #fff; font-size: 16px; transition: 0.3s; }
+        .input-box:focus { border-color: #007aff; box-shadow: 0 0 0 2px rgba(0,122,255,0.2); }
+        
+        .btn-main { width: 100%; background: #007aff; color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn-main:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-danger { background: #ff3b30; margin-top: 10px; }
 
-        /* 按钮 */
-        .btn {
-            width: 100%; padding: 14px; border: none; border-radius: 8px;
-            font-size: 15px; font-weight: bold; cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .btn:active { opacity: 0.8; }
-        .btn-gold { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; }
-        .btn-dark { background: #222; color: #aaa; margin-top: 10px; }
-        .btn-sm { width: auto; padding: 8px 16px; font-size: 13px; display: inline-block; }
-
-        /* 状态提示 */
-        .msg { text-align: center; font-size: 13px; min-height: 20px; margin-top: 10px; }
-        .msg-ok { color: #4cd964; }
+        /* --- 消息提示 --- */
+        .msg-box { text-align: center; font-size: 14px; margin-top: 15px; min-height: 20px; }
         .msg-err { color: #ff3b30; }
+        .msg-ok { color: #34c759; }
 
-        /* 列表 */
-        .list-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid #222; font-size: 13px;
-        }
-        .list-item:last-child { border-bottom: none; }
-        .tag { padding: 2px 8px; border-radius: 4px; font-size: 11px; }
-        .tag-used { background: #333; color: #888; }
-        .tag-new { background: rgba(255,215,0,0.15); color: #ffd700; }
+        /* --- 加载动画 (模拟考核) --- */
+        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.95); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #007aff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { color: #fff; font-size: 14px; letter-spacing: 1px; }
 
-        /* 公告 */
-        .notice { 
-            background: rgba(255,215,0,0.08); border-left: 3px solid #ffd700;
-            padding: 12px 15px; border-radius: 0 8px 8px 0; margin-bottom: 15px;
-            font-size: 13px; color: #ccc; line-height: 1.6;
-        }
-
+        /* --- 隐藏类 --- */
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="logo">
-        <h1>LAMBORGHINI CLUB</h1>
-        <p>核心权限管理系统 v3.0</p>
+<div class="app-container">
+    <!-- 顶部 -->
+    <div class="header">
+        <div class="logo">LAMBORGHINI CLUB</div>
+        <div class="subtitle">核心资源验证系统 V3.0</div>
     </div>
 
-    <!-- ========== 登录页 ========== -->
-    <div id="page-login">
-        <div class="card">
-            <h2>🔐 身份验证</h2>
-            <input type="text" id="login-user" placeholder="账号 / 卡密" autocomplete="off">
-            <input type="password" id="login-pass" placeholder="密码">
-            <button class="btn btn-gold" onclick="doLogin()">登 录</button>
-            <div id="login-msg" class="msg"></div>
-        </div>
-        <p style="text-align:center;color:#444;font-size:11px;">首次访问请使用默认管理员账号登录</p>
+    <!-- 公告 -->
+    <div id="notice-area" class="notice-bar hidden">
+        <span class="notice-icon">📢</span>
+        <span id="notice-text">系统维护中...</span>
     </div>
 
-    <!-- ========== 管理员后台 ========== -->
-    <div id="page-admin" class="hidden">
-        <!-- 公告编辑 -->
-        <div class="card">
-            <h2>📢 发布公告</h2>
-            <input type="text" id="admin-notice-input" placeholder="输入公告内容...">
-            <button class="btn btn-gold btn-sm" onclick="saveNotice()">发布</button>
+    <!-- 登录页 -->
+    <div id="page-login" class="content">
+        <div class="form-group">
+            <input type="text" id="login-user" class="input-box" placeholder="请输入用户名 / 卡密">
         </div>
-
-        <!-- 生成卡密 -->
-        <div class="card">
-            <h2>🎫 卡密管理</h2>
-            <button class="btn btn-gold" onclick="genKey()">生成新卡密</button>
-            <div id="new-key-box" class="msg msg-ok" style="margin:15px 0;word-break:break-all;"></div>
-            
-            <div style="margin-top:15px;">
-                <h3 style="font-size:13px;color:#888;margin-bottom:10px;">已生成卡密列表</h3>
-                <div id="key-list"></div>
-            </div>
+        <div class="form-group">
+            <input type="password" id="login-pass" class="input-box" placeholder="请输入密码 (管理员必填)">
         </div>
-
-        <button class="btn btn-dark" onclick="logout()">退出登录</button>
+        <button onclick="handleLogin()" class="btn-main">立即接入</button>
+        <div id="login-msg" class="msg-box"></div>
     </div>
 
-    <!-- ========== 用户大厅 ========== -->
-    <div id="page-user" class="hidden">
-        <div id="user-notice" class="notice hidden"></div>
+    <!-- 用户主页 -->
+    <div id="page-user" class="content hidden">
+        <h2 style="margin-bottom:20px; color:#fff;">欢迎回来</h2>
+        <div style="background:#1c1c1e; padding:20px; border-radius:12px; margin-bottom:20px;">
+            <p style="color:#888; font-size:12px;">当前状态</p>
+            <p style="color:#34c759; font-size:18px; font-weight:bold; margin-top:5px;">已激活 - 永久授权</p>
+        </div>
+        <button onclick="logout()" class="btn-main btn-danger">退出登录</button>
+    </div>
 
-        <div class="card">
-            <h2>🏎️ 考核通道</h2>
-            <p style="color:#888;font-size:13px;margin-bottom:15px;">完成以下考核任务获取正式成员资格</p>
-            
-            <div style="margin-bottom:15px;">
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:5px;">
-                    <span>考核进度</span><span>0%</span>
-                </div>
-                <div style="height:6px;background:#222;border-radius:3px;overflow:hidden;">
-                    <div style="width:0%;height:100%;background:#ffd700;border-radius:3px;transition:width 1s;"></div>
-                </div>
-            </div>
+    <!-- 管理后台 -->
+    <div id="page-admin" class="content hidden">
+        <h2 style="margin-bottom:20px; color:#fff;">管理员控制台</h2>
+        
+        <div class="form-group">
+            <label style="color:#888; font-size:12px; display:block; margin-bottom:5px;">发布全局公告</label>
+            <input type="text" id="admin-notice-input" class="input-box" placeholder="输入公告内容...">
+        </div>
+        <button onclick="saveNotice()" class="btn-main" style="background:#333;">更新公告</button>
 
-            <button class="btn btn-gold" onclick="alert('请配置真实考核链接')">进入考核大厅</button>
+        <div style="margin-top:30px; border-top:1px solid #333; padding-top:20px;">
+            <label style="color:#888; font-size:12px; display:block; margin-bottom:10px;">生成新卡密</label>
+            <button onclick="generateKey()" class="btn-main">生成随机卡密</button>
+            <div id="new-key-display" style="margin-top:15px; padding:10px; background:#222; border-radius:8px; text-align:center; color:#00d2ff; word-break:break-all;"></div>
         </div>
 
-        <div class="card">
-            <h2>🛠️ 功能模块</h2>
-            <div class="list-item"><span>辅助工具 v2.1</span><span style="color:#4cd964">可用</span></div>
-            <div class="list-item"><span>规则文档</span><span style="color:#888">只读</span></div>
-            <div class="list-item"><span>在线客服</span><span style="color:#ffd700">在线</span></div>
-        </div>
+        <button onclick="logout()" class="btn-main btn-danger" style="margin-top:30px;">退出后台</button>
+    </div>
 
-        <button class="btn btn-dark" onclick="logout()">退出登录</button>
+    <!-- 加载层 -->
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">正在校验数据完整性...</div>
     </div>
 </div>
 
 <script>
-// ===== 数据存储键名 =====
-const K_ADMIN = 'lambo_admin';      // 管理员账号信息
-const K_KEYS = 'lambo_keys';        // 卡密列表
-const K_NOTICE = 'lambo_notice';    // 公告
-const K_SESSION = 'lambo_session';  // 当前登录会话
-
-// ===== 初始化 =====
-window.onload = function() {
-    initAdmin();
-    checkSession();
-};
-
-// 初始化管理员（仅首次）
-function initAdmin() {
-    if (!localStorage.getItem(K_ADMIN)) {
-        // 默认管理员账号密码，你可以改成自己的
-        localStorage.setItem(K_ADMIN, JSON.stringify({
-            user: 'admin',
-            pass: 'admin888'
-        }));
-    }
-}
-
-// 检查登录状态
-function checkSession() {
-    const session = JSON.parse(localStorage.getItem(K_SESSION) || 'null');
-    if (!session) return showPage('page-login');
-
-    if (session.role === 'admin') {
-        loadAdminPanel();
-        showPage('page-admin');
-    } else if (session.role === 'user') {
-        loadUserPanel();
-        showPage('page-user');
-    } else {
-        showPage('page-login');
-    }
-}
-
-// ===== 登录逻辑 =====
-function doLogin() {
-    const user = document.getElementById('login-user').value.trim();
-    const pass = document.getElementById('login-pass').value.trim();
-    const msg = document.getElementById('login-msg');
-
-    if (!user || !pass) {
-        msg.className = 'msg msg-err';
-        msg.textContent = '请输入账号和密码';
-        return;
-    }
-
-    // 验证管理员
-    const admin = JSON.parse(localStorage.getItem(K_ADMIN));
-    if (user === admin.user && pass === admin.pass) {
-        saveSession({ role: 'admin', user: user });
-        msg.className = 'msg msg-ok';
-        msg.textContent = '管理员登录成功！';
-        setTimeout(() => { loadAdminPanel(); showPage('page-admin'); }, 500);
-        return;
-    }
-
-    // 验证卡密用户
-    const keys = JSON.parse(localStorage.getItem(K_KEYS) || '[]');
-    const matchedKey = keys.find(k => k.key === user && k.pass === pass);
+    // --- 配置区 ---
+    const ADMIN_USER = "admin"; 
+    const ADMIN_PASS = "123456"; // 默认管理员密码，你可以改
     
-    if (matchedKey) {
-        if (matchedKey.used) {
-            msg.className = 'msg msg-err';
-            msg.textContent = '该卡密已被使用！';
+    // --- 初始化 ---
+    window.onload = function() {
+        // 检查是否已登录
+        const session = localStorage.getItem('lb_session');
+        if(session) {
+            const data = JSON.parse(session);
+            if(data.role === 'admin') showPage('page-admin');
+            else showPage('page-user');
+        }
+        loadNotice();
+    };
+
+    // --- 核心逻辑 ---
+    function handleLogin() {
+        const u = document.getElementById('login-user').value.trim();
+        const p = document.getElementById('login-pass').value.trim();
+        const msg = document.getElementById('login-msg');
+
+        if(!u) {
+            msg.className = "msg-box msg-err";
+            msg.innerText = "请输入账号或卡密";
             return;
         }
-        // 标记为已使用
-        matchedKey.used = true;
-        matchedKey.useTime = new Date().toLocaleString();
-        localStorage.setItem(K_KEYS, JSON.stringify(keys));
+
+        // 显示假加载动画
+        document.getElementById('loader').style.display = 'flex';
         
-        saveSession({ role: 'user', key: user });
-        msg.className = 'msg msg-ok';
-        msg.textContent = '验证成功，正在进入...';
-        setTimeout(() => { loadUserPanel(); showPage('page-user'); }, 800);
-    } else {
-        msg.className = 'msg msg-err';
-        msg.textContent = '账号或密码错误';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            
+            // 1. 管理员逻辑
+            if(u === ADMIN_USER) {
+                if(p === ADMIN_PASS) {
+                    saveSession({role: 'admin'});
+                    showPage('page-admin');
+                } else {
+                    msg.className = "msg-box msg-err";
+                    msg.innerText = "管理员密码错误";
+                }
+                return;
+            }
+
+            // 2. 普通用户/卡密逻辑 (这里模拟验证，实际可对接数据库)
+            // 假设卡密格式为 LB- 开头，或者只要输入了就算通过(演示用)
+            if(u.startsWith('LB-') || u.length > 3) {
+                 saveSession({role: 'user', key: u});
+                 showPage('page-user');
+            } else {
+                msg.className = "msg-box msg-err";
+                msg.innerText = "无效的卡密或账号";
+            }
+        }, 800); // 模拟800毫秒网络延迟
     }
-}
 
-// ===== 管理员功能 =====
-function loadAdminPanel() {
-    renderKeyList();
-    const notice = localStorage.getItem(K_NOTICE) || '';
-    document.getElementById('admin-notice-input').value = notice;
-}
-
-function genKey() {
-    const key = 'LB-' + Math.random().toString(36).substr(2,6).toUpperCase();
-    const pass = Math.random().toString(36).substr(2,6);
-    const keys = JSON.parse(localStorage.getItem(K_KEYS) || '[]');
-    keys.unshift({ key, pass, used: false, createTime: new Date().toLocaleString() });
-    localStorage.setItem(K_KEYS, JSON.stringify(keys));
-    
-    document.getElementById('new-key-box').textContent = '✅ 新卡密 → 账号: ' + key + ' | 密码: ' + pass;
-    renderKeyList();
-}
-
-function renderKeyList() {
-    const keys = JSON.parse(localStorage.getItem(K_KEYS) || '[]');
-    const box = document.getElementById('key-list');
-    if (keys.length === 0) {
-        box.innerHTML = '<div style="color:#444;font-size:13px;text-align:center;padding:10px;">暂无卡密</div>';
-        return;
+    // --- 辅助功能 ---
+    function showPage(pageId) {
+        ['page-login', 'page-user', 'page-admin'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById(pageId).classList.remove('hidden');
     }
-    box.innerHTML = keys.map(k => `
-        <div class="list-item">
-            <div>
-                <div style="color:#fff;">${k.key}</div>
-                <div style="color:#666;font-size:11px;">密码: ${k.pass}</div>
-            </div>
-            <span class="tag ${k.used ? 'tag-used' : 'tag-new'}">${k.used ? '已使用' : '未使用'}</span>
-        </div>
-    `).join('');
-}
 
-function saveNotice() {
-    const text = document.getElementById('admin-notice-input').value.trim();
-    localStorage.setItem(K_NOTICE, text);
-    alert('公告已发布！');
-}
-
-// ===== 用户功能 =====
-function loadUserPanel() {
-    const notice = localStorage.getItem(K_NOTICE) || '';
-    if (notice) {
-        const el = document.getElementById('user-notice');
-        el.textContent = '📢 ' + notice;
-        el.classList.remove('hidden');
+    function saveSession(data) {
+        localStorage.setItem('lb_session', JSON.stringify(data));
     }
-}
 
-// ===== 通用工具 =====
-function saveSession(data) {
-    localStorage.setItem(K_SESSION, JSON.stringify(data));
-}
+    function logout() {
+        localStorage.removeItem('lb_session');
+        location.reload();
+    }
 
-function logout() {
-    localStorage.removeItem(K_SESSION);
-    location.reload();
-}
+    // --- 管理员功能 ---
+    function saveNotice() {
+        const txt = document.getElementById('admin-notice-input').value;
+        if(txt) {
+            localStorage.setItem('lb_notice', txt);
+            alert("公告已发布！");
+            loadNotice();
+        }
+    }
 
-function showPage(id) {
-    ['page-login','page-admin','page-user'].forEach(p => {
-        document.getElementById(p).classList.toggle('hidden', p !== id);
-    });
-}
+    function loadNotice() {
+        const txt = localStorage.getItem('lb_notice');
+        const bar = document.getElementById('notice-area');
+        if(txt) {
+            document.getElementById('notice-text').innerText = txt;
+            bar.classList.remove('hidden');
+        } else {
+            bar.classList.add('hidden');
+        }
+    }
+
+    function generateKey() {
+        // 生成类似 LB-X8Y2Z 的随机码
+        const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const key = `LB-${rand}`;
+        document.getElementById('new-key-display').innerText = key;
+    }
 </script>
+
 </body>
 </html>
