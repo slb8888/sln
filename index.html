@@ -2,413 +2,205 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>兰博护航 - 和平精英专业陪玩</title>
     <!-- 引入图标库 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* --- 全局重置与基础样式 --- */
-        :root {
-            --primary-color: #007AFF; /* KEG经典蓝 */
-            --bg-color: #F5F6FA;
-            --text-main: #333333;
-            --text-sub: #999999;
-            --nav-height: 60px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding-bottom: calc(var(--nav-height) + 20px); /* 防止内容被底部遮挡 */
-        }
+        /* --- 基础样式 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f5f6fa; color: #333; padding-bottom: 70px; }
 
         /* --- 顶部导航 --- */
-        .header {
-            background: #fff;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            font-weight: bold;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-        }
+        .header { background: #fff; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         /* --- 公告栏 --- */
-        .notice-bar {
-            background: #FFFBE6;
-            color: #FA8C16;
-            padding: 8px 15px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-        }
-        .notice-bar i { margin-right: 5px; }
+        .notice { background: #fffbe6; color: #fa8c16; padding: 10px 15px; font-size: 13px; display: flex; align-items: center; border-bottom: 1px solid #ffe58f; }
+        .notice i { margin-right: 8px; }
 
-        /* --- 金刚区 (图标入口) --- */
-        .grid-nav {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            padding: 20px 10px;
-            background: #fff;
-            margin-bottom: 10px;
-        }
-        .grid-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 12px;
-            color: #555;
-            cursor: pointer;
-        }
-        .icon-box {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            background: #E6F7FF;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-        /* 考核入口特殊样式 */
-        .assess-box {
-            background: #FFF0F6;
-            color: #EB2F96;
-        }
+        /* --- 金刚区 (功能入口) --- */
+        .grid-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px 10px; background: #fff; margin-bottom: 10px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 12px; color: #666; cursor: pointer; }
+        .nav-icon { width: 45px; height: 45px; background: #e6f7ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; color: #007aff; font-size: 20px; }
 
-        /* --- 热门推荐 (瀑布流) --- */
-        .section-title {
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .section-title span:last-child {
-            font-size: 12px;
-            color: var(--text-sub);
-            font-weight: normal;
-        }
+        /* --- 热门推荐标题 --- */
+        .section-title { padding: 15px; font-size: 16px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .section-title span.more { font-size: 12px; color: #999; font-weight: normal; }
 
-        .product-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 两列布局 */
-            gap: 10px;
-            padding: 0 10px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-img {
-            height: 100px;
-            background: #333;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            position: relative;
-        }
-        /* 模拟图片标签 */
-        .tag {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            background: rgba(0,0,0,0.6);
-            font-size: 10px;
-            padding: 2px 5px;
-            border-radius: 4px;
-        }
-
-        .card-info {
-            padding: 10px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: bold;
-            line-height: 1.4;
-            margin-bottom: 5px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-tags {
-            font-size: 10px;
-            color: #999;
-            background: #f9f9f9;
-            padding: 3px;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .price {
-            color: #FF4D4F;
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .price small { font-size: 12px; }
-
-        .btn-buy {
-            background: var(--primary-color);
-            color: #fff;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            cursor: pointer;
-        }
+        /* --- 商品列表 --- */
+        .product-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 10px; }
+        .card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .card-img { height: 100px; background: #333; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; position: relative; }
+        .tag { position: absolute; top: 5px; left: 5px; background: rgba(0,0,0,0.6); padding: 2px 6px; font-size: 10px; border-radius: 4px; }
+        .card-info { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; line-height: 1.4; }
+        .card-tags { font-size: 10px; color: #999; margin-bottom: 8px; }
+        .card-tags span { background: #f0f0f0; padding: 2px 4px; border-radius: 3px; margin-right: 4px; }
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .price { color: #ff4d4f; font-size: 16px; font-weight: bold; }
+        .btn-buy { background: #007aff; color: #fff; border: none; padding: 5px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; }
         .btn-buy:active { opacity: 0.8; }
 
-        /* --- 底部导航栏 --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background: #fff;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #eee;
-            z-index: 999; /* 确保在最上层 */
-            padding-bottom: env(safe-area-inset-bottom); /* 适配iPhone底部横条 */
-        }
+        /* --- 底部导航 --- */
+        .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 999; padding-bottom: env(safe-area-inset-bottom); }
+        .bar-item { text-align: center; font-size: 10px; color: #999; flex: 1; }
+        .bar-item.active { color: #007aff; }
+        .bar-item i { font-size: 20px; display: block; margin-bottom: 4px; }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #999;
-            font-size: 10px;
-            flex: 1;
-            height: 100%;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .nav-item.active { color: var(--primary-color); }
-        .nav-item i { font-size: 20px; margin-bottom: 4px; }
-
-        /* --- 独家AI悬浮窗 --- */
-        .ai-float {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #00C6FF, #0072FF);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 24px;
-            box-shadow: 0 4px 10px rgba(0,114,255,0.4);
-            z-index: 1000;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* --- 弹窗通用样式 --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal {
-            background: #fff;
-            width: 80%;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-        .modal h3 { margin-bottom: 10px; color: #333; }
+        /* --- 弹窗样式 (核心修复) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: none; align-items: center; justify-content: center; }
+        .modal { background: #fff; width: 80%; max-width: 300px; border-radius: 12px; padding: 20px; text-align: center; position: relative; animation: popIn 0.2s ease-out; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal h3 { margin-bottom: 10px; font-size: 18px; }
         .modal p { font-size: 14px; color: #666; margin-bottom: 15px; line-height: 1.5; }
-        .modal-btn {
-            background: var(--primary-color);
-            color: #fff;
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: none;
-            font-size: 14px;
-        }
-        .close-modal {
-            position: absolute;
-            top: 10px; right: 15px;
-            font-size: 20px; color: #999;
-            cursor: pointer;
-        }
+        .wx-box { background: #f5f5f5; padding: 10px; border-radius: 6px; font-size: 18px; font-weight: bold; color: #07c160; margin-bottom: 15px; letter-spacing: 1px; border: 1px dashed #07c160; }
+        .modal-btn { background: #007aff; color: #fff; border: none; padding: 10px 0; width: 100%; border-radius: 20px; font-size: 16px; font-weight: bold; }
+        .close-modal { position: absolute; top: 10px; right: 10px; font-size: 20px; color: #999; cursor: pointer; padding: 5px; }
 
-        /* --- 打手认证卡片样式 --- */
-        .id-card {
-            background: linear-gradient(to right, #2c3e50, #4ca1af);
-            color: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: left;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-        .id-card::after {
-            content: 'LANBO';
-            position: absolute;
-            right: -10px; bottom: -10px;
-            font-size: 40px; opacity: 0.1; font-weight: bold;
-        }
-        .id-header { display: flex; align-items: center; margin-bottom: 10px; }
-        .avatar { width: 40px; height: 40px; background: #fff; border-radius: 50%; margin-right: 10px; }
-        .id-name { font-weight: bold; font-size: 16px; }
-        .id-role { font-size: 12px; opacity: 0.8; }
-        .qr-placeholder {
-            width: 80px; height: 80px; background: #fff; margin: 0 auto;
-            display: flex; align-items: center; justify-content: center; color: #333; font-size: 12px;
-        }
+        /* --- AI悬浮球 --- */
+        .ai-float { position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; box-shadow: 0 4px 10px rgba(118, 75, 162, 0.4); z-index: 1000; cursor: pointer; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
+        /* --- 打手认证卡片 (隐藏默认，点击显示) --- */
+        .pro-card-view { display: none; padding: 20px; text-align: center; }
+        .pro-card-bg { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #fff; padding: 30px 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3); }
+        .avatar { width: 80px; height: 80px; background: #fff; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; color: #1e3c72; font-size: 30px; border: 3px solid rgba(255,255,255,0.3); }
     </style>
 </head>
 <body>
 
-    <!-- 顶部标题 -->
-    <div class="header">兰博护航</div>
+    <!-- 顶部 -->
+    <div class="header">兰博护航 · 和平精英</div>
 
-    <!-- 公告栏 -->
-    <div class="notice-bar">
+    <!-- 公告 -->
+    <div class="notice">
         <i class="fas fa-bullhorn"></i>
         <span>系统运行正常，目前接单中，加微秒回复。</span>
     </div>
 
-    <!-- 页面内容容器 -->
-    <div id="page-home">
+    <!-- 首页内容区 -->
+    <div id="home-view">
         <!-- 金刚区 -->
         <div class="grid-nav">
-            <div class="grid-item">
-                <div class="icon-box"><i class="fas fa-gamepad"></i></div>
-                <span>和平精英</span>
-            </div>
-            <div class="grid-item">
-                <div class="icon-box"><i class="fas fa-crosshairs"></i></div>
-                <span>苏尔南</span>
-            </div>
-            <div class="grid-item">
-                <div class="icon-box"><i class="fas fa-subway"></i></div>
-                <span>地铁逃生</span>
-            </div>
-            <!-- 打手考核入口 -->
-            <div class="grid-item" onclick="openModal('assess')">
-                <div class="icon-box assess-box"><i class="fas fa-user-graduate"></i></div>
+            <div class="nav-item" onclick="openModal('考核')">
+                <div class="nav-icon"><i class="fas fa-user-graduate"></i></div>
                 <span>打手考核</span>
+            </div>
+            <div class="nav-item" onclick="openModal('代理')">
+                <div class="nav-icon"><i class="fas fa-crown"></i></div>
+                <span>开通代理</span>
+            </div>
+            <div class="nav-item" onclick="openModal('福利')">
+                <div class="nav-icon"><i class="fas fa-gift"></i></div>
+                <span>每日福利</span>
+            </div>
+            <div class="nav-item" onclick="openModal('客服')">
+                <div class="nav-icon"><i class="fas fa-headset"></i></div>
+                <span>联系客服</span>
             </div>
         </div>
 
         <!-- 热门推荐 -->
         <div class="section-title">
             <span>热门推荐</span>
-            <span>查看更多 ></span>
+            <span class="more">查看更多 ></span>
         </div>
 
         <div class="product-list">
             <!-- 商品1 -->
             <div class="card">
-                <div class="card-img" style="background: #222;">苏尔南<span class="tag">热门</span></div>
+                <div class="card-img" style="background: #2b2b2b;">苏尔南<span class="tag">爆款</span></div>
                 <div class="card-info">
                     <div class="card-title">苏尔南冲突·保底1000万物资</div>
-                    <div class="card-tags">包赔 | 纯手工 | 效率</div>
-                    <div class="card-bottom">
-                        <div class="price"><small>¥</small>68.00</div>
-                        <button class="btn-buy" onclick="copyWeChat()">立即下单</button>
+                    <div class="card-tags"><span>包赔</span><span>纯手工</span></div>
+                    <div class="price-row">
+                        <span class="price">¥68.00</span>
+                        <button class="btn-buy" onclick="openOrderModal('苏尔南冲突')">立即下单</button>
                     </div>
                 </div>
             </div>
             <!-- 商品2 -->
             <div class="card">
-                <div class="card-img" style="background: #444;">地铁逃生<span class="tag">爆款</span></div>
+                <div class="card-img" style="background: #4a4a4a;">地铁逃生<span class="tag">热门</span></div>
                 <div class="card-info">
                     <div class="card-title">地铁逃生·老六克星护航</div>
-                    <div class="card-tags">KD保证 | 装备全送</div>
-                    <div class="card-bottom">
-                        <div class="price"><small>¥</small>128.00</div>
-                        <button class="btn-buy" onclick="copyWeChat()">立即下单</button>
+                    <div class="card-tags"><span>KD保证</span><span>装备全送</span></div>
+                    <div class="price-row">
+                        <span class="price">¥128.00</span>
+                        <button class="btn-buy" onclick="openOrderModal('地铁逃生')">立即下单</button>
                     </div>
                 </div>
             </div>
-             <!-- 商品3 -->
-             <div class="card">
-                <div class="card-img" style="background: #333;">排位代练</div>
+            <!-- 商品3 -->
+            <div class="card">
+                <div class="card-img" style="background: #1a1a1a;">排位代练</div>
                 <div class="card-info">
                     <div class="card-title">王牌/战神段位·指定打手</div>
-                    <div class="card-tags">效率 | 绿玩 | 不掉分</div>
-                    <div class="card-bottom">
-                        <div class="price"><small>¥</small>30.00<small>/星</small></div>
-                        <button class="btn-buy" onclick="copyWeChat()">立即下单</button>
+                    <div class="card-tags"><span>效率</span><span>绿玩</span></div>
+                    <div class="price-row">
+                        <span class="price">¥20.00/星</span>
+                        <button class="btn-buy" onclick="openOrderModal('排位代练')">立即下单</button>
                     </div>
                 </div>
             </div>
              <!-- 商品4 -->
              <div class="card">
-                <div class="card-img" style="background: #555;">科技检测</div>
+                <div class="card-img" style="background: #333;">娱乐陪玩</div>
                 <div class="card-info">
-                    <div class="card-title">全区服透视自瞄检测</div>
-                    <div class="card-tags">安全 | 快速 | 准确</div>
-                    <div class="card-bottom">
-                        <div class="price"><small>¥</small>10.00</div>
-                        <button class="btn-buy" onclick="copyWeChat()">立即下单</button>
+                    <div class="card-title">趣味玩法·聊天解闷·不封号</div>
+                    <div class="card-tags"><span>声音好听</span><span>技术流</span></div>
+                    <div class="price-row">
+                        <span class="price">¥35.00/h</span>
+                        <button class="btn-buy" onclick="openOrderModal('娱乐陪玩')">立即下单</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 个人中心页面 (默认隐藏) -->
-    <div id="page-profile" style="display: none; padding: 20px;">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <div style="width: 80px; height: 80px; background: #ddd; border-radius: 50%; margin: 0 auto
+    <!-- 打手认证页 (默认隐藏) -->
+    <div id="pro-view" class="pro-card-view">
+        <div class="pro-card-bg">
+            <div class="avatar"><i class="fas fa-user-ninja"></i></div>
+            <h2>金牌打手认证</h2>
+            <p style="margin-top:10px; opacity:0.8;">ID: LB-8848 | 状态: 接单中</p>
+        </div>
+        <div style="text-align:left; padding: 0 10px;">
+            <h3>我的战绩</h3>
+            <p style="color:#666; font-size:14px; margin-top:10px;">本赛季 KD：8.5</p>
+            <p style="color:#666; font-size:14px; margin-top:5px;">总订单数：1,240 单</p>
+            <p style="color:#666; font-size:14px; margin-top:5px;">好评率：99.8%</p>
+            <br>
+            <button class="btn-buy" style="width:100%; padding:12px; font-size:16px;" onclick="switchTab('home')">返回大厅</button>
+        </div>
+    </div>
+
+    <!-- AI悬浮球 -->
+    <div class="ai-float" onclick="openModal('AI')">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-bar">
+        <div class="bar-item active" onclick="switchTab('home')" id="tab-home">
+            <i class="fas fa-home"></i>首页
+        </div>
+        <div class="bar-item" onclick="switchTab('pro')" id="tab-pro">
+            <i class="fas fa-id-card"></i>打手认证
+        </div>
+        <div class="bar-item" onclick="openModal('订单')">
+            <i class="fas fa-list-alt"></i>订单
+        </div>
+        <div class="bar-item" onclick="openModal('我的')">
+            <i class="fas fa-user"></i>我的
+        </div>
+    </div>
+
+    <!-- 通用弹窗 (防拦截核心) -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+        <div class="modal">
+            <div class="close-modal" onclick="closeModalDirect()">×</div>
+            <h3 id="modalTitle">提示</h3>
+            <p id="modalContent">内容区域</p>
+            <div class="wx-box" id="modalWx">LANBO_666</div>
+            <button
