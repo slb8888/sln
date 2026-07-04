@@ -1,252 +1,339 @@
-<！doctype.card > 超文本标记语言>>
-<超文本标记语言 朗="zh-CN">
-<头>
-    <元 字符集="UTF-8">
-    <元 姓名="视口" 内容="宽度=设备宽度，初始比例=1.0，最大比例=1.0，用户可缩放=否">
-    <标题>兰博俱乐部 - 核心系统</标题>
-    <风格>
-/* --- 基础设置 & 解决不跟手 --- */
-*{箱体尺寸：边框框；概要：没有一个；-webkit-tap-highlight-color：透明的；}
-        超文本标记语言, 身体 {
-边缘：0；填充：0；宽容度：100%；高度：100%；
-背景色：#0f0f0f；颜色：#FFF；
-字体系列：-苹果-系统，BlinkMacSystemFont，"Segoe UI"，Roboto，无衬线；
-overflow-x：隐藏的；
-            /* 关键优化：强制开启硬件加速，滑动如丝般顺滑 */
--webkit-溢出-滚动：触摸；
-            过卷行为: 没有一个;
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>兰博俱乐部 - 核心系统</title>
+    <style>
+        /* --- 核心优化：解决不跟手和卡顿 --- */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #0f0f0f; color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+            /* 关键优化：开启硬件加速 */
+            -webkit-overflow-scrolling: touch;
+            transform: translateZ(0);
         }
 
-/* --- 布局容器 --- */
-。应用程序容器 {
-显示: 弯曲; 挠曲方向: 柱; 高度: 100vh;
+        /* --- 布局容器 --- */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-/* --- 顶部导航 --- */
-。页眉 {
-高度：60px；背景：#1a1a1a；下边框：1px固体#333；
-显示：弯曲；对齐项目：中心；justify-content：间距；
-填充：020PX；弯曲收缩：0；z指数：100；
+        /* --- 标题样式 --- */
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(90deg, #ff0055, #ffcc00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
         }
-。标志{字体大小：18px；字体粗细：大胆的；颜色：#ffd700；字母间距：1PX；}
-。状态点{容忍度：8px；海拔：8px；背景：#00ff00；边缘半径：50%；箱形阴影：05px#00ff00；}
-
-/* --- 内容区域 (可滚动) --- */
-。内容区{
-弯曲：1；溢流y：自动；填料：20px；
-}
-位置：相对；
-
-/* --- 卡片样式 --- */
-位置：相对；
-背景：#1e1e1e；边框半径：12px；填充：20px；下边距：20px；
-边框：1px实心#333；框阴影：04px15px rgba(0,0,0,0.5);
+        p.subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+            text-align: center;
         }
-.card h2{上边距：0；字体大小：18px；颜色：#Eee；左边框：4px实心#ffd700；左边填充：10px；}
-.card p{color：#aaa；font-size:14px；line-height:1.6；}
 
-/* --- 按钮样式 --- */
-.btn{
-显示：块；宽度：100%；填充：15px；页边距顶部：10px；
-背景：线性梯度(135度，#ffd700，#ffa500)；
-颜色：#000；字体粗细：粗体；文本对齐：居中；边框半径：8px；
-文本修饰：无；边框：无；光标：指针；
-过渡：变换0.1s；
+        /* --- 卡片样式 --- */
+        .card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
-.btn：活动{变换：比例(0.98)；不透明度：0.9；}
-.btn-次要{background：#333；color：#fff；border:1px solid#555；}
+
+        /* --- 输入框样式 --- */
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        input:focus {
+            border-color: #ff0055;
+        }
+
+        /* --- 按钮样式 --- */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+        .btn:active { transform: scale(0.98); }
         
-/* --- 输入框样式 --- */
-输入[type="text"]，输入[type="password"]{
-宽度：100%；填充：12px；背景：#111；边框：1px实心#444；
-颜色：#FFF；边框半径：6px；底边距：10px；字体大小：16px；
+        .btn-primary {
+            background: linear-gradient(90deg, #ff0055, #ff5500);
+            color: white;
+        }
+        .btn-secondary {
+            background: #333;
+            color: #ccc;
+            margin-top: 10px;
         }
 
-/* --- 隐藏/显示控制 --- */
-.hidden{display:none！important；}
-        
-/* --- 管理员面板特效 --- */
-.admin-badge{
-背景：#ff4444；颜色：白色；填充：2px8px；边框半径：4px；字体大小：12px；左边距：10px；
+        /* --- 状态标签 --- */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 10px;
         }
-</风格></风格>
-</头>头>
-<身体>身体>
+        .status-admin { background: #ff0055; color: white; }
+        .status-user { background: #00aa55; color: white; }
+        .status-guest { background: #555; color: #ddd; }
 
-<div 班级="应用容器">div class="app-container">
-<! -- 顶部 --><! -- 顶部 -->
-<div 班级="页眉"><div 班级="页眉">
-<div 班级="徽标">兰博基尼俱乐部<跨度 身份标识="admin-tag"班级="管理员徽章已隐藏">管理员</跨度></div><div 班级="徽标">LAMBORGHINI CLUB<跨度 身份标识="admin-tag" 班级="管理员徽章已隐藏">管理员</跨度></div>
-<div 班级="状态点"></div><div 班级="状态点"></div>
-</div></div>
+        /* --- 隐藏区域 --- */
+        .hidden { display: none !important; }
 
-<! -- 内容区 --><! -- 内容区 -->
-<div 班级="内容区域"><div 班级="内容区域">
+        /* --- 列表样式 --- */
+        ul { list-style: none; padding: 0; margin: 0; }
+        li {
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:last-child { border-bottom: none; }
         
-<! -- 1. 登录/绑定 界面 --><! -- 1. 登录/绑定 界面 -->
-<div 身份标识="登录部分"班级="卡"><div 身份标识="登录部分" 班级="卡">
-<H2>🔐 设备绑定与验证</H2><H2>🔐 设备绑定与验证</H2>
-            <p>本系统采用设备指纹技术。首次输入有效卡密将自动绑定当前设备。</p><p>本系统采用设备指纹技术。首次输入有效卡密将自动绑定当前设备。</p>
-            <input type="text" id="key-input" placeholder="请输入您的专属卡密...">
-            <button class="btn" onclick="verifyKey()">立即激活 / 登录</button>
-            <p style="font-size:12px; color:#666; margin-top:10px;">* 第一个成功激活的设备将自动成为超级管理员。</p>
-        </div>
+        .copy-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
 
-        <!-- 2. 管理员专用面板 (默认隐藏) -->
-        <div id="admin-panel" class="card hidden" style="border: 1px solid #ffd700;">
-            <h2>👑 管理员控制台</h2>
-            <p>欢迎回来，老大。在这里您可以生成新的卡密。</p>
-            <div style="background:#111; padding:10px; border-radius:6px; margin:10px 0;">
-                <p style="margin:0; color:#0f0;">当前状态：已绑定主设备</p>
-                <p style="margin:5px 0 0; color:#aaa;">设备ID：<span id="my-device-id">...</span></p>
-            </div>
-            <button class="btn" onclick="generateNewKey()">生成一张新卡密</button>
-            <div id="new-key-display" style="margin-top:10px; color:#ffd700; font-weight:bold; text-align:center;"></div>
-        </div>
-
-        <!-- 3. 俱乐部核心功能区 (验证通过后显示) -->
-        <div id="main-content" class="hidden">
-            
-            <div class="card">
-                <h2>🏎️ 兰博考核通道</h2>
-                <p>点击下方二维码或链接进入考核群。只有通过考核的成员才能获得正式身份。</p>
-                <!-- 这里放你的链接 -->
-                <a href="https://你的考核链接.com" target="_blank" class="btn btn-secondary">进入考核大厅</a>
-            </div>
-
-            <div class="card">
-                <h2>🛠️ 辅助功能修复版</h2>
-                <p>针对上次反馈的卡顿问题进行了底层重构，现在操作更加跟手。</p>
-                <button class="btn">启动功能模块</button>
-            </div>
-
-            <div class="card">
-                <h2>📢 最新公告</h2>
-                <p>系统已升级至 v2.0，增加了设备锁功能，保障账号安全。</p>
-            </div>
-            
-            <br><br><br>
-        </div>
-
+<div class="container">
+    <!-- 顶部标题 -->
+    <div style="margin-top: 20px;">
+        <h1>兰博俱乐部</h1>
+        <p class="subtitle">Lambo Club System V2.0</p>
     </div>
+
+    <!-- 1. 登录/注册区域 (默认显示) -->
+    <div id="login-section" class="card">
+        <h3 style="margin-top:0">身份验证</h3>
+        <p style="font-size:12px; color:#aaa; margin-bottom:15px;">首次访问将自动绑定为管理员。</p>
+        
+        <input type="text" id="device-id-display" placeholder="设备ID: 获取中..." readonly style="background:#222; color:#666; border:none;">
+        <input type="password" id="access-code" placeholder="请输入卡密/激活码">
+        
+        <button onclick="handleLogin()" class="btn btn-primary">进入系统</button>
+    </div>
+
+    <!-- 2. 管理员面板 (仅管理员可见) -->
+    <div id="admin-panel" class="card hidden">
+        <span class="status-badge status-admin">超级管理员</span>
+        <h3 style="margin-top:0">管理控制台</h3>
+        <p style="font-size:13px; color:#ccc;">欢迎回来，管理员。您可以在此生成卡密。</p>
+        
+        <div style="background:#222; padding:10px; border-radius:8px; margin-bottom:15px;">
+            <label style="font-size:12px; color:#888;">生成新卡密：</label>
+            <div style="display:flex; gap:10px; margin-top:5px;">
+                <input type="text" id="new-card-output" readonly placeholder="点击生成..." style="margin:0; flex:1;">
+                <button onclick="generateCard()" class="btn btn-primary" style="width:auto; margin:0;">生成</button>
+            </div>
+        </div>
+
+        <button onclick="enterLobby()" class="btn btn-primary">进入考核大厅</button>
+        <button onclick="logout()" class="btn btn-secondary">退出登录</button>
+    </div>
+
+    <!-- 3. 普通用户面板 (仅已激活用户可见) -->
+    <div id="user-panel" class="card hidden">
+        <span class="status-badge status-user">认证成员</span>
+        <h3 style="margin-top:0">成员中心</h3>
+        <p style="font-size:13px; color:#ccc;">您的设备已激活，可以使用以下功能。</p>
+        
+        <ul>
+            <li>
+                <span>📜 查看考核进度</span>
+                <span style="color:#00aa55">进行中</span>
+            </li>
+            <li>
+                <span>🛠️ 辅助工具下载</span>
+                <span style="color:#888">v1.2</span>
+            </li>
+        </ul>
+
+        <button onclick="enterLobby()" class="btn btn-primary" style="margin-top:20px;">进入考核大厅</button>
+        <button onclick="logout()" class="btn btn-secondary">退出登录</button>
+    </div>
+
 </div>
 
 <script>
-    // --- 简易本地数据库模拟 (利用浏览器缓存) ---
-    // 注意：这是纯前端模拟，真实环境需要后端，但在GitHub Pages上这是最简单的方案
+    // --- 配置区域 ---
+    const ADMIN_KEY = "admin888"; // 预设的管理员密码（防止别人乱填）
+    // 如果你想让第一个人随便填什么都算管理员，可以把下面逻辑改一下，但建议留个后门密码
     
-    const DB_KEYS = 'lamborghini_db_keys'; // 存储所有有效卡密
-    const DB_DEVICES = 'lamborghini_db_devices'; // 存储已绑定的设备
-    const MY_DEVICE_ID = getDeviceId(); // 获取当前手机的一个唯一标识
-
-    // 初始化：如果没有数据，先写入一个默认的“上帝卡密”
-    function initDB() {
-        if (!localStorage.getItem(DB_KEYS)) {
-            // 预设一个初始卡密，你可以把这个发给第一个想测试的人，或者自己先用
-            localStorage.setItem(DB_KEYS, JSON.stringify(["VIP888", "ADMIN001"]));
-        }
-    }
-
-    // 获取设备ID (简单模拟)
-    function getDeviceId() {
-        let id = localStorage.getItem('my_device_id');
-        if (!id) {
-            id = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-            localStorage.setItem('my_device_id', id);
-        }
-        return id;
-    }
-
-    // 页面加载时检查状态
+    // --- 初始化逻辑 ---
     window.onload = function() {
-        initDB();
-        checkLoginStatus();
+        // 1. 生成或获取设备ID (模拟)
+        let deviceId = localStorage.getItem('lambo_device_id');
+        if (!deviceId) {
+            deviceId = 'DEV-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            localStorage.setItem('lambo_device_id', deviceId);
+        }
+        document.getElementById('device-id-display').value = "设备指纹: " + deviceId;
+
+        // 2. 检查是否已经是管理员
+        const isAdmin = localStorage.getItem('lambo_is_admin');
+        if (isAdmin === 'true') {
+            showSection('admin-panel');
+            return;
+        }
+
+        // 3. 检查是否是普通用户
+        const isUser = localStorage.getItem('lambo_is_user');
+        if (isUser === 'true') {
+            showSection('user-panel');
+            return;
+        }
+
+        // 4. 检查是否是“第一人” (如果没有管理员记录)
+        const hasAdmin = localStorage.getItem('lambo_has_admin_registered');
+        if (!hasAdmin) {
+            // 是第一个人！提示他
+            document.querySelector('#login-section p').innerHTML = "<span style='color:#ff0055'>检测到您是首位访问者<br>输入任意密码即可成为管理员</span>";
+        }
     };
 
-    // 检查是否已登录
-    function checkLoginStatus() {
-        const devices = JSON.parse(localStorage.getItem(DB_DEVICES) || "{}");
-        
-        // 情况1：当前设备已绑定
-        if (devices[MY_DEVICE_ID]) {
-            showMainInterface(devices[MY_DEVICE_ID]);
-        } 
-        // 情况2：未绑定，显示登录框
-        else {
-            document.getElementById('login-section').classList.remove('hidden');
-        }
-    }
+    // --- 登录处理 ---
+    function handleLogin() {
+        const inputCode = document.getElementById('access-code').value;
+        const hasAdmin = localStorage.getItem('lambo_has_admin_registered');
 
-    // 验证卡密逻辑
-    function verifyKey() {
-        const inputKey = document.getElementById('key-input').value.trim();
-        const validKeys = JSON.parse(localStorage.getItem(DB_KEYS) || "[]");
-        const devices = JSON.parse(localStorage.getItem(DB_DEVICES) || "{}");
-
-        // 1. 检查卡密是否存在
-        const keyIndex = validKeys.indexOf(inputKey);
-        
-        if (keyIndex > -1) {
-            // 卡密有效！
-            
-            // 2. 判定是否为管理员 (如果是列表里的第一个，或者是特定的卡密)
-            // 这里简化逻辑：只要卡密有效，且目前没有任何设备绑定过，那他就是管理员
-            // 或者你可以指定：如果输入的是 "VIP888"，就是管理员
-            
-            let role = 'member';
-            const allDevicesCount = Object.keys(devices).length;
-
-            // 逻辑：如果是世界上第一个激活的人，或者用的是特定管理卡密
-            if (allDevicesCount === 0 || inputKey === 'VIP888') {
-                role = 'admin';
+        // 情况A：还没有管理员（我是第一个）
+        if (!hasAdmin) {
+            if(inputCode.length < 3) {
+                alert("请至少输入3位字符作为管理员密码");
+                return;
             }
+            localStorage.setItem('lambo_is_admin', 'true');
+            localStorage.setitem('lambo_has_admin_registered'Lambo_has_admin_registered'，'正确')；'正确');
+localStorage.setitem('lambo_admin_pwd'，inputCode)；//记住管理员密码localStorage.setitem('lambo_admin_pwd'，inputCode)；//记住管理员密码
+            警惕的("恭喜！您已成为本设备的管理员。");警惕的("恭喜！您已成为本设备的管理员。");
+showSection('admin-panel')；showSection('admin-panel');
+返回；返回;
+        }
 
-            // 3. 绑定设备
-            devices[MY_DEVICE_ID] = {
-                role: role,
-                keyUsed: inputKey,
-                date: new Date().toLocaleDateString()
-            };
-            localStorage.setItem(DB_DEVICES, JSON.stringify(devices));
+        // 情况B：已有管理员，验证密码// 情况B：已有管理员，验证密码
+ConstsavedAdminPwd=localStorage.getitem('lambo_admin_pwd')；常数savedAdminPwd=localStorage.getitem('lambo_admin_pwd');
+        
+        // 如果是管理员密码// 如果是管理员密码
+如果(inputCode===savedAdminPwd){如果 (inputCode===savedAdminPwd) {
+localStorage.setitem('lambo_is_admin'，'true')；localStorage.setitem('lambo_is_admin', 'true');
+showSection('admin-panel')；showSection('admin-panel');
+返回；返回;
+        }
 
-            // 4. (可选) 消耗掉卡密，让它只能用一次
-            // validKeys.splice(keyIndex, 1);
-            // localStorage.setItem(DB_KEYS, JSON.stringify(validKeys));
-
-            alert("激活成功！身份：" + (role === 'admin' ? "超级管理员" : "普通会员"));
-            checkLoginStatus(); // 刷新界面
-
-        } else {
-            alert("❌ 卡密无效，请联系管理员获取。");
+        // 如果是普通卡密 (这里简单模拟，实际应该有个卡密库)// 如果是普通卡密 (这里简单模拟，实际应该有个卡密库)
+//假设只要是"vip123"或者是刚才生成的卡密就算通过//假设只要是"vip123"或者是刚才生成的卡密就算通过
+        // 为了演示，我们允许输入 "vip666" 激活成普通用户// 为了演示，我们允许输入 "vip666" 激活成普通用户
+如果(inputCode==="vip666"||checkGeneratedCard(inputCode)){如果 (inputCode==="vip666"||checkGeneratedCard(inputCode)) {
+localStorage.setitem('lambo_is_user'，'true')；localStorage.setitem('lambo_is_user', 'true');
+警惕的("激活成功！")；警报("激活成功！");
+showSection('用户面板')；showSection('用户面板');
+}其他{} 其他 {
+警惕的("卡密错误！ 请联系管理员获取。")；警报("卡密错误！ 请联系管理员获取。");
         }
     }
 
-    // 显示主界面
-    function showMainInterface(userData) {
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('main-content').classList.remove('hidden');
-
-        // 如果是管理员
-        if (userData.role === 'admin') {
-            document.getElementById('admin-tag').classList.remove('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-            document.getElementById('my-device-id').innerText = MY_DEVICE_ID;
+// --- 管理员功能：生成卡密 ---// --- 管理员功能：生成卡密 ---
+让currentGeneratedCard=""；让currentGeneratedCard="";
+函数generateCard(){功能 generateCard() {
+        // 生成一个随机卡密// 生成一个随机卡密
+ConstrandomStr=数学.随机().toString(36).substr(2，6).toUpperCase()；常数randomStr=数学.随机().toString(36).substr(2, 6).toUpperCase();
+Const卡片="兰博-"+randomStr；const卡片="兰博-"+randomStr;
+        
+// 保存到本地存储 (模拟数据库)// 保存到本地存储 (模拟数据库)
+让卡片=JSON.解析(localStorage.getitem('lambo_valid_cards')||"[]")；让卡片=JSON.解析(localStorage.getitem('lambo_valid_cards')||"[]");
+卡片.推(卡)；卡片.推(卡片);
+localStorage.setitem('lambo_valid_cards'，JSON.使字符串化(卡片))；localStorage.setitem('lambo_valid_cards', JSON.使字符串化(卡片));
+        
+// 显示// 显示
+文件。getElementById('新卡出口')。价值=卡片；文件.getElementById('新卡出口').价值=卡片;
+currentGeneratedCard=卡片；currentGeneratedCard=卡片;
+        
+// 复制到剪贴板 (尝试)// 复制到剪贴板 (尝试)
+尝试{尝试 {
+领航员.clipboard.WRITETEXT(卡片)；导航器.clipboard.WRITETEXT(卡片);
+警惕的("卡密已生成并复："+卡片)；警报("卡密已生成并复制: "+卡片);
+}渔获(e){} 赶上(e) {
+警惕的("加密已生成："+卡片)；警报("卡密已生成: "+卡片);
         }
     }
 
-    // 管理员功能：生成新卡密
-    function generateNewKey() {
-        const newKey = 'LB-' + Math.random().toString(36).substr(2, 6).toUpperCase();
-        const validKeys = JSON.parse(localStorage.getItem(DB_KEYS) || "[]");
-        validKeys.push(newKey);
-        localStorage.setItem(DB_KEYS, JSON.stringify(validKeys));
-        
-        document.getElementById('new-key-display').innerText = "生成成功：" + newKey;
-        
-        // 简单的复制到剪贴板提示
-        alert("新卡密已生成并保存到系统：\n" + newKey + "\n(请复制上方字符)");
+功能检查GeneratedCard(代码){功能 checkGeneratedCard(代码) {
+让卡片=JSON.解析(localStorage.getitem('lambo_valid_cards')||"[]")；让卡片=JSON.解析(localStorage.getitem('lambo_valid_cards')||"[]");
+返回卡.包括(代码)；返回卡片.包括(代码);
     }
-</script>
 
-</body>
-</html>
+// --- 界面切换 ---// --- 界面切换 ---
+函数showSection(身份标识){功能 showSection(身份标识) {
+文件。getElementById('登录部分').classList.添加('隐藏')；文档.getElementById('登录部分').classList.添加('隐藏');
+文件。getElementById('admin-panel').classList.添加('隐藏')；文档.getElementById('admin-panel').classList.添加('隐藏');
+文件。getElementById('用户面板').classList.添加('隐藏')；文档.getElementById('用户面板').classList.添加('隐藏');
+文件。getElementById(身份标识).classList.移除('隐藏')；文档.getElementById(身份标识).classList.移除('隐藏');
+    }
+
+// --- 核心功能：进入考核大厅 ---// --- 核心功能：进入考核大厅 ---
+函数enterLobby(){功能 enterLobby() {
+// ⚠️ 注意：把下面的链接改成你真正的考核链接！// ⚠️ 注意：把下面的链接改成你真正的考核链接！
+//如果没有链接，可以写JavaScript:void(0)然后弹个窗//如果没有链接，可以写javascript:void(0)然后弹个窗
+常数targetUrl="https://www.baidu.com"；//暂时用百度代替，记得改！Const targetUrl="https://www.baidu.com"；//暂时用百度代替，记得改！
+        
+        // 如果你想弹窗提示而不是跳转，用这个：// 如果你想弹窗提示而不是跳转，用这个：
+//alert("正在前往考核大厅...")；//alert("正在前往考核大厅...")；
+        
+        // 执行跳转// 执行跳转
+窗户.位置.href=targetUrl；窗口.位置.href=targetUrl;
+    }
+
+// --- 退出登录 ---// --- 退出登录 ---
+函数注销(){功能 注销() {
+如果(确认("确定要退出当前账号吗？")){如果(确认("确定要退出当前账号吗？")) {
+            // 这里只清除登录状态，不清除设备ID和管理员记录// 这里只清除登录状态，不清除设备ID和管理员记录
+localStorage.RemoveItem('lambo_is_admin')；localStorage.RemoveItem('lambo_is_admin');
+localStorage.RemoveItem('lambo_is_user')；localStorage.RemoveItem('lambo_is_user');
+位置.重载()；//刷新页面location.reload()；//刷新页面
+        }
+    }
+</剧本>
+
+</身体>
+</超文本标记语言>
