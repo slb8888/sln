@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>兰博俱乐部 - 功能修复版</title>
+    <style>
+        /* --- 基础样式 --- */
+        body { margin: 0; padding: 0; background-color: #111; color: white; font-family: sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* 顶部标题 */
+        .header { height: 60px; background-color: #222; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; font-size: 18px; font-weight: bold; color: #FFD700; flex-shrink: 0; }
+        
+        /* 内容区域 (可滚动) */
+        .content-area { flex: 1; overflow-y: auto; position: relative; padding: 20px; }
+        
+        /* 页面切换逻辑 */
+        .page { display: none; height: 100%; flex-direction: column; }
+        .page.active { display: flex; }
+        
+        /* --- 首页大按钮 --- */
+        .big-btn {
+            width: 100%; height: 120px; background: linear-gradient(135deg, #004e92, #000428);
+            border-radius: 15px; margin-bottom: 20px; border: 1px solid #00F3FF;
+            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); cursor: pointer; transition: transform 0.1s;
+        }
+        .big-btn:active { transform: scale(0.98); }
+        .btn-ai { background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); border-color: #fdbb2d; }
+        
+        /* --- AI 聊天界面 --- */
+        #chat-box { flex: 1; overflow-y: auto; padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 15px; line-height: 1.4; word-wrap: break-word; }
+        .msg.ai { background-color: #333; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid #444; }
+        .msg.user { background-color: #007bff; align-self: flex-end; border-bottom-right-radius: 2px; }
+        
+        .input-area { display: flex; gap: 10px; margin-top: 10px; flex-shrink: 0; }
+        #user-input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #444; background: #222; color: white; outline: none; }
+        #send-btn { padding: 0 20px; background: #00F3FF; color: #000; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; }
+        
+        /* --- 考核界面 --- */
+        .quiz-container { text-align: center; padding-top: 20px; }
+        .question-card { background: #222; padding: 20px; border-radius: 15px; border: 1px solid #444; margin-bottom: 20px; text-align: left; }
+        .q-title { font-size: 18px; margin-bottom: 20px; color: #FFD700; }
+        .option-btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: #333; border: 1px solid #555; color: white; border-radius: 8px; text-align: left; cursor: pointer; }
+        .option-btn:active { background: #444; }
+        
+        /* 底部导航栏 */
+        .nav-bar { height: 60px; background-color: #1a1a1a; display: flex; border-top: 1px solid #333; flex-shrink: 0; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #888; font-size: 12px; cursor: pointer; }
+        .nav-item.active { color: #00F3FF; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部标题 -->
+    <div class="header">兰博俱乐部 | 顶级护航</div>
+
+    <!-- 中间内容区 -->
+    <div class="content-area">
+        
+        <!-- 1. 首页 -->
+        <div id="page-home" class="page active">
+            <div style="text-align:center; margin-bottom: 30px; color:#888;">点击下方按钮开始服务</div>
+            <div class="big-btn btn-ai" onclick="switchTab('ai')">🤖 AI 智能客服</div>
+            <div class="big-btn" onclick="switchTab('exam')">📝 申请考核</div>
+        </div>
+
+        <!-- 2. AI 客服页 -->
+        <div id="page-ai" class="page">
+            <div id="chat-box">
+                <div class="msg ai">你好！我是兰博俱乐部智能助手。请问有什么可以帮您？（例如：价格、车队、装备）</div>
+            </div>
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="输入问题..." onkeypress="handleKeyPress(event)">
+                <button id="send-btn" onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+
+        <!-- 3. 考核页 -->
+        <div id="page-exam" class="page">
+            <div id="quiz-ui" class="quiz-container">
+                <div class="question-card">
+                    <div class="q-title" id="q-text">题目加载中...</div>
+                    <div id="options-area"></div>
+                </div>
+                <div id="score-display" style="color:#888; font-size:14px;">进度: 1 / 3</div>
+            </div>
+            <!-- 结果页 (默认隐藏) -->
+            <div id="result-ui" class="quiz-container" style="display:none;">
+                <h2 style="color:#00F3FF; margin-bottom:20px;">考核通过！</h2>
+                <p style="color:#ccc; margin-bottom:30px;">您的意识非常顶尖，已获得加入车队的资格。</p>
+                <div class="big-btn" onclick="alert('请联系群主领取卡密！')">领取奖励</div>
+                <button onclick="resetQuiz()" style="background:none; border:none; color:#666; margin-top:20px;">重新考核</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('home')" id="nav-home">
+            <div class="nav-icon">🏠</div>首页
+        </div>
+        <div class="nav-item" onclick="switchTab('ai')" id="nav-ai">
+            <div class="nav-icon">🤖</div>AI客服
+        </div>
+        <div class="nav-item" onclick="switchTab('exam')" id="nav-exam">
+            <div class="nav-icon">📝</div>申请考核
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 页面切换逻辑 ---
+        function switchTab(tabName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // 显示目标页面
+            document.getElementById('page-' + tabName).classList.add('active');
+            document.getElementById('nav-' + tabName).classList.add('active');
+
+            // 如果切到考核页，初始化题目
+            if(tabName === 'exam') {
+                loadQuestion();
+            }
+        }
+
+        // --- 2. AI 聊天逻辑 ---
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 添加用户消息
+            addMessage(text, 'user');
+            input.value = '';
+
+            // 模拟AI思考延迟
+            setTimeout(() => {
+                const reply = getAutoReply(text);
+                addMessage(reply, 'ai');
+            }, 600);
+        }
+
+        function addMessage(text, type) {
+            const box = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className='msg${类型}‘；
+div.内部文本=文本；
+盒子.appendChild(div)；
+盒子.卷盖=盒子。scrollHeight；//自动滚到底部
+        }
+
+功能handleKeyPress(e){
+如果(e.钥匙==='输入')SendMessage()；
+        }
+
+        // 简单的关键词回复库
+功能getAutoReply(文本){
+如果 (文本.包括('价格')||文本.包括('钱')) 返回 "我们的护航套餐起步价仅需 9.9 元，性价比极高！" ;
+            如果 (文本.包括('封号')||文本.包括('安全')) 返回 "我们要的是长久生意，纯绿色手打，全程录屏，绝对安全。";
+            如果 (文本.包括('怎么')||文本.包括('加入')) 返回 "请点击底部的【申请考核】，通过测试后即可进群。";
+            返回 "收到，请稍等，人工客服正在接入中... (或者您可以试试问关于价格的问题)";
+        }
+
+// --- 3. 考核系统逻辑 ---
+Const问题=[
+            {
+                q: "在地铁逃生中，遇到满编队冲脸，第一反应应该是？",
+                选项: ["原地不动", "寻找掩体并呼叫队友", "直接扔掉手机", "冲上去肉搏"],
+答: 1 // 索引，从0开始，所以1代表第二个选项
+            },
+            {
+                q: "独眼蛇套装的主要优势是什么？",
+                选项：["增加移动速度"，"高爆率加成"，"外观好看", "没有任何属性"],
+答案：1
+},
+{
+                q: "带队大哥让你架枪，你应该？",
+                选项: ["去搜旁边的房子", "盯着大哥指定的方向，保护侧翼", "趴在地上装死", "自己冲出去打人"],
+答案：1
+}
+];
+
+让currentQIndex=0；
+
+功能loadQuestion(){
+            // 检查是否做完
+如果(currentQIndex>=问题.长度){
+文件.getElementById('qui-ui')。风格.显示='无'；
+文件.getElementById('result-ui')。风格.显示='块'；
+                返回;
+}
+
+            // 渲染题目
+ConstqData=问题[currentQIndex]；
+文件.getElementById('q-text')。内部文本=‘${currentQIndex+1}。${qData.q}`;
+文件.getElementById('分数显示').内部文本=进度：${currentQIndex+1}/${问题.长度}`;
+            
+ConstoptsDivoptsDivgetElementById
+qui'；('用户界面')。风格。显示='块'；document.getElementById('qui-用户界面')。风格.显示='块'；超文本标记语言>getElementById('选项-区域')；常数optsDiv=文件.getElementById('选项-区域')；.innerHTML="；//清空旧选项optsDiv.innerHTML="；//清空旧选项
+
+QData文件.getElementByIdqData选择，索引/超文本标记语言>/超文本标记语言>/超文本标记语言>/超文本标记语言>/超文本标记语言>/超文本标记语言>/超文本标记语言>/超文本标记语言>foreach(选项.)=>{qData.选项.foreach((选择，指数)=>{.选项.foreach((选择，索引)=>{qData.选项.foreach((选择，指数)=>{
+ConstBTN=文件.createElement('按钮')；常数BTN=文件.createElement('按钮')；=文件.createElement('按钮')；常数BTN=文件.createElement('按钮');
+BTN.className='option-btn'；btn.className='option-btn'；.className='option-btn'；btn.className='option-btn';
+BTN.内部文本=opt；btn.内部文本=选择；.内部文本=opt；btn.内部文本=选择;
+BTN.onClick=()=>checkAnswer(索引)；btn.onClick=()=>checkAnswer(指数)；.onClick=()=>checkAnswer(索引)；btn.onClick=()=>checkAnswer(指数);
+optsDiv.appendChild(BTN)；optsDiv.appendChild(BTN)；.appendChild(BTN)；optsDiv.appendChild(BTN);
+            });
+        }
+
+函数checkAnswer(SelectedIndex){功能checkAnswer(SelectedIndex){(SelectedIndex){功能 checkAnswer(SelectedIndex) {
+ConstcorrectIndex=问题[currentQIndex].ans；constcorrectIndex=问题[currentQIndex]。答；=问题[currentQIndex].ans；const correctIndex=问题[currentQIndex].答;
+如果(SelectedIndex===确定指数){如果(SelectedIndex===确定性指数){(SelectedIndex===正确Index){如果 (SelectedIndex===correctIndex) {
+                // 答对了，稍微延迟一下跳下一题，体验更好// 答对了，稍微延迟一下跳下一题，体验更好// 答对了，稍微延迟一下跳下一题，体验更好// 答对了，稍微延迟一下跳下一题，体验更好
+setTimeout(()=>{setTimeout(()=>{(()=>{setTimeout(()=>{
+currentQIndex++；currentQIndex++；++；currentQIndex++;
+loadQuestion()；loadQuestion()；()；loadQuestion();
+}, 300);}, 300);, 300);}, 300);
+}其他{} 其他 {其他{} 其他 {
+警惕的("回答错误！ 请重新思考战术意识。")；警报("回答错误！ 请重新思考战术意识。");("回答错误！ 请重新思考战术意识。")；警报("回答错误！ 请重新思考战术意识。")；
+//这里你可以选择是否重置currentQIndex=0；//这里你可以选择是否重置currentQIndex=0；
+            }
+        }
+
+函数resetQuiz(){功能resetQuiz()){(){功能resetQuiz()){
+currentQIndex=0；currentQIndex=0；=0；currentQIndex=0；=0；currentQIndex=0；=0；currentQIndex=0；
+文件。getElementById('result-ui')。风格。显示='无'；文件。getElementById('result-ui')。风格。显示='无'；('result-ui')。风格。显示='无'；文档.getElementById('result-ui')。风格.显示='无'；('result-ui')。风格。显示='无'；文件。getElementById('result-ui')。风格。显示='无'；('result-ui')。风格。显示='无'；文档.getElementById('result-ui')。风格.显示='无'；('result-ui')。风格。显示='无'；文件。getElementById('result-ui')。风格。显示='无'；('result-ui')。风格。显示='无'；文档.getElementById('result-ui')。风格.显示='无'；('result-ui')。风格。显示='无'；文件。getElementById('result-ui')。风格。显示='无'；('result-ui')。风格。显示='无'；文档.getElementByID('result-ui')。风格.显示='无'；
+文件。getElementById('qui-ui')。风格。显示='块'；文档.getElementById('qui-ui')。风格.显示='块"'qui-用户界面'(‘qui-用户界面')。风格。显示='块'；文档.getElementById('qui-用户界面')。风格.显示='块"qui-用户界面'("qui-用户界面”-用户界面')。 风格。 显示="块'='qui-用户界面'-getElementById')。风格.显示="块"qui-用户界面'=显示'(“qui-用户界面”-ui”)。风格。显示=”块'='qui-ui'-getElementById')。风格.展=”块”qui-ui'=显像'=显示'
+loadQuestion()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion();()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion();；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion();()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion()；()；loadQuestion();
+}}
+<
+<
+<
