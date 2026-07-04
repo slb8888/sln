@@ -5,216 +5,243 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>兰博俱乐部 - 核心系统</title>
     <style>
-        /* --- 基础重置与暗黑风格 --- */
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body { background: #0a0a0a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; }
+        /* --- 基础样式 --- */
+        :root { --primary: #ffcc00; --bg: #0a0a0a; --card: #161616; --text: #e0e0e0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         
-        /* --- 容器布局 --- */
-        .app-container { width: 100%; max-width: 420px; min-height: 100vh; background: #111; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        /* --- 顶部跑马灯 --- */
+        .marquee-container { background: #000; color: var(--primary); padding: 8px 0; font-size: 14px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid #333; }
+        .marquee-content { display: inline-block; animation: scroll 15s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* --- 登录页 --- */
+        #login-page { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary); margin-bottom: 5px; letter-spacing: 1px; }
+        .sub-logo { font-size: 12px; color: #666; margin-bottom: 30px; }
+        .input-group { width: 100%; max-width: 320px; margin-bottom: 15px; }
+        input { width: 100%; padding: 14px; background: #222; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 16px; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
+        .btn-main { width: 100%; max-width: 320px; padding: 14px; background: linear-gradient(45deg, #ffcc00, #ff9900); border: none; border-radius: 8px; color: #000; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .error-msg { color: #ff4444; font-size: 12px; margin-top: 10px; height: 15px; }
+
+        /* --- 仪表盘通用 --- */
+        .dashboard { display: none; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .user-info span { color: var(--primary); font-weight: bold; }
+        .logout-btn { background: #333; color: #fff; border: none; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
         
-        /* --- 顶部导航 --- */
-        .header { padding: 20px; text-align: center; border-bottom: 1px solid #222; background: #0f0f0f; }
-        .logo { font-size: 24px; font-weight: 800; letter-spacing: 1px; background: linear-gradient(45deg, #007aff, #00d2ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
-        .subtitle { font-size: 12px; color: #666; }
-
-        /* --- 公告栏 --- */
-        .notice-bar { background: rgba(0, 122, 255, 0.1); color: #007aff; padding: 10px 15px; font-size: 13px; display: flex; align-items: center; border-bottom: 1px solid #1a1a1a; }
-        .notice-icon { margin-right: 8px; font-weight: bold; }
-
-        /* --- 内容区域 --- */
-        .content { flex: 1; padding: 30px 20px; display: flex; flex-direction: column; justify-content: center; }
+        /* --- 卡片样式 --- */
+        .card { background: var(--card); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #222; }
+        .card h3 { font-size: 16px; margin-bottom: 10px; color: #fff; border-left: 3px solid var(--primary); padding-left: 8px; }
         
-        /* --- 表单样式 --- */
-        .form-group { margin-bottom: 20px; }
-        .input-box { width: 100%; background: #1c1c1e; border: 1px solid #333; padding: 14px; border-radius: 12px; color: #fff; font-size: 16px; transition: 0.3s; }
-        .input-box:focus { border-color: #007aff; box-shadow: 0 0 0 2px rgba(0,122,255,0.2); }
-        
-        .btn-main { width: 100%; background: #007aff; color: #fff; border: none; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 10px; }
-        .btn-main:active { transform: scale(0.98); opacity: 0.9; }
-        .btn-danger { background: #ff3b30; margin-top: 10px; }
+        /* --- 考核进度条 --- */
+        .progress-bar { width: 100%; height: 10px; background: #333; border-radius: 5px; overflow: hidden; margin-top: 10px; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s; }
 
-        /* --- 消息提示 --- */
-        .msg-box { text-align: center; font-size: 14px; margin-top: 15px; min-height: 20px; }
-        .msg-err { color: #ff3b30; }
-        .msg-ok { color: #34c759; }
+        /* --- 列表样式 --- */
+        .list-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #222; font-size: 14px; }
+        .tag-lb { background: #222; color: var(--primary); padding: 2px 6px; border-radius: 4px; font-size: 10px; border: 1px solid var(--primary); }
 
-        /* --- 加载动画 (模拟考核) --- */
-        .loader-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,10,10,0.95); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #007aff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { color: #fff; font-size: 14px; letter-spacing: 1px; }
+        /* --- AI 助手 --- */
+        .ai-float { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); cursor: pointer; z-index: 100; }
+        .ai-chat-box { position: fixed; bottom: 80px; right: 20px; width: 300px; height: 400px; background: #1a1a1a; border: 1px solid #333; border-radius: 10px; display: none; flex-direction: column; z-index: 99; overflow: hidden; }
+        .chat-content { flex: 1; padding: 10px; overflow-y: auto; font-size: 13px; }
+        .chat-input { display: flex; border-top: 1px solid #333; }
+        .chat-input input { border: none; border-radius: 0; background: #222; }
+        .chat-input button { width: 60px; background: var(--primary); border: none; color: #000; font-weight: bold; }
+        .msg-sys { color: #888; margin: 5px 0; text-align: center; font-size: 11px; }
+        .msg-user { background: #333; padding: 8px; border-radius: 8px; margin: 5px 0; align-self: flex-end; max-width: 80%; }
+        .msg-ai { background: #2a2a2a; border: 1px solid var(--primary); padding: 8px; border-radius: 8px; margin: 5px 0; align-self: flex-start; max-width: 80%; }
 
-        /* --- 隐藏类 --- */
-        .hidden { display: none !important; }
+        /* --- 财务按钮 --- */
+        .finance-btns { display: flex; gap: 10px; margin-top: 10px; }
+        .f-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .f-in { background: #2e7d32; color: #fff; }
+        .f-out { background: #c62828; color: #fff; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <!-- 顶部 -->
-    <div class="header">
-        <div class="logo">LAMBORGHINI CLUB</div>
-        <div class="subtitle">核心资源验证系统 V3.0</div>
-    </div>
-
-    <!-- 公告 -->
-    <div id="notice-area" class="notice-bar hidden">
-        <span class="notice-icon">📢</span>
-        <span id="notice-text">系统维护中...</span>
+    <!-- 顶部跑马灯 -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            9.9保底1000万 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 地铁经典单词：Subway Surfers &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 兰博俱乐部欢迎您 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 9.9保底1000万 &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; LB打手团队待命中...
+        </div>
     </div>
 
     <!-- 登录页 -->
-    <div id="page-login" class="content">
-        <div class="form-group">
-            <input type="text" id="login-user" class="input-box" placeholder="请输入用户名 / 卡密">
-        </div>
-        <div class="form-group">
-            <input type="password" id="login-pass" class="input-box" placeholder="请输入密码 (管理员必填)">
-        </div>
-        <button onclick="handleLogin()" class="btn-main">立即接入</button>
-        <div id="login-msg" class="msg-box"></div>
-    </div>
-
-    <!-- 用户主页 -->
-    <div id="page-user" class="content hidden">
-        <h2 style="margin-bottom:20px; color:#fff;">欢迎回来</h2>
-        <div style="background:#1c1c1e; padding:20px; border-radius:12px; margin-bottom:20px;">
-            <p style="color:#888; font-size:12px;">当前状态</p>
-            <p style="color:#34c759; font-size:18px; font-weight:bold; margin-top:5px;">已激活 - 永久授权</p>
-        </div>
-        <button onclick="logout()" class="btn-main btn-danger">退出登录</button>
-    </div>
-
-    <!-- 管理后台 -->
-    <div id="page-admin" class="content hidden">
-        <h2 style="margin-bottom:20px; color:#fff;">管理员控制台</h2>
+    <div id="login-page">
+        <div class="logo">LAMBO CLUB</div>
+        <div class="sub-logo">核心权限管理系统 v4.0</div>
         
-        <div class="form-group">
-            <label style="color:#888; font-size:12px; display:block; margin-bottom:5px;">发布全局公告</label>
-            <input type="text" id="admin-notice-input" class="input-box" placeholder="输入公告内容...">
-        </div>
-        <button onclick="saveNotice()" class="btn-main" style="background:#333;">更新公告</button>
-
-        <div style="margin-top:30px; border-top:1px solid #333; padding-top:20px;">
-            <label style="color:#888; font-size:12px; display:block; margin-bottom:10px;">生成新卡密</label>
-            <button onclick="generateKey()" class="btn-main">生成随机卡密</button>
-            <div id="new-key-display" style="margin-top:15px; padding:10px; background:#222; border-radius:8px; text-align:center; color:#00d2ff; word-break:break-all;"></div>
-        </div>
-
-        <button onclick="logout()" class="btn-main btn-danger" style="margin-top:30px;">退出后台</button>
+        <div class="input-group"><input type="text" id="username" placeholder="账号 / Admin"></div>
+        <div class="input-group"><input type="password" id="password" placeholder="密码 / 卡密"></div>
+        <button class="btn-main" onclick="handleLogin()">登 录</button>
+        <div class="error-msg" id="error-msg"></div>
     </div>
 
-    <!-- 加载层 -->
-    <div id="loader" class="loader-overlay">
-        <div class="spinner"></div>
-        <div class="loading-text">正在校验数据完整性...</div>
+    <!-- 管理员后台 -->
+    <div id="admin-dash" class="dashboard">
+        <div class="header">
+            <div class="user-info">管理员：<span id="admin-name">Admin</span></div>
+            <button class="logout-btn" onclick="logout()">退出</button>
+        </div>
+
+        <div class="card">
+            <h3>💰 财务控制中心</h3>
+            <p style="font-size: 12px; color: #888;">当前余额：¥ 99,999,999.00</p>
+            <div class="finance-btns">
+                <button class="f-btn f-in" onclick="alert('收款码已生成（模拟）')">我要收款</button>
+                <button class="f-btn f-out" onclick="alert('付款申请已提交')">发起付款</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>🛡️ LB 精英打手列表</h3>
+            <div id="hitman-list">
+                <!-- JS 填充 -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>⚙️ 系统设置</h3>
+            <div class="list-item"><span>服务器状态</span><span style="color:#0f0">运行中</span></div>
+            <div class="list-item"><span>全局公告</span><span>9.9保底1000万</span></div>
+        </div>
     </div>
-</div>
+
+    <!-- 普通用户考核页 -->
+    <div id="user-dash" class="dashboard">
+        <div class="header">
+            <div class="user-info">成员：<span id="user-name">User</span></div>
+            <button class="logout-btn" onclick="logout()">退出</button>
+        </div>
+
+        <div class="card">
+            <h3>📝 入会考核任务</h3>
+            <p style="font-size: 13px; color: #aaa; margin-bottom: 10px;">请完成以下任务以解锁全部权限：</p>
+            <div class="list-item"><span>1. 转发宣传海报</span><span><input type="checkbox"></span></div>
+            <div class="list-item"><span>2. 邀请3位好友</span><span><input type="checkbox"></span></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
+            <p style="text-align: right; font-size: 10px; margin-top: 5px; color: #666;">进度 30%</p>
+        </div>
+
+        <div class="card">
+            <h3>📢 俱乐部公告</h3>
+            <p style="font-size: 13px; line-height: 1.5;">欢迎加入兰博俱乐部！目前正在进行9.9保底活动。请务必遵守群规，禁止违规操作。</p>
+        </div>
+    </div>
+
+    <!-- AI 助手 -->
+    <div class="ai-float" onclick="toggleAI()">🤖</div>
+    <div class="ai-chat-box" id="ai-box">
+        <div style="padding: 10px; background: #222; border-bottom: 1px solid #333; font-weight: bold;">AI 智能助手</div>
+        <div class="chat-content" id="chat-history">
+            <div class="msg-sys">AI助手已上线，请问有什么可以帮您？</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="ai-input" placeholder="输入问题...">
+            <button onclick="sendMsg()">发送</button>
+        </div>
+    </div>
 
 <script>
-    // --- 配置区 ---
-    const ADMIN_USER = "admin"; 
-    const ADMIN_PASS = "123456"; // 默认管理员密码，你可以改
-    
-    // --- 初始化 ---
-    window.onload = function() {
-        // 检查是否已登录
-        const session = localStorage.getItem('lb_session');
-        if(session) {
-            const data = JSON.parse(session);
-            if(data.role === 'admin') showPage('page-admin');
-            else showPage('page-user');
-        }
-        loadNotice();
+    // --- 模拟数据库 ---
+    const DB = {
+        admin: 'admin123', // 管理员密码
+        users: ['user1', 'test'], // 普通用户白名单
+        hitmen: [
+            { id: 'LB-001', status: '接单中', level: '金牌' },
+            { id: 'LB-007', status: '休息中', level: '银牌' },
+            { id: 'LB-888', status: '任务中', level: '王牌' }
+        ]
     };
 
-    // --- 核心逻辑 ---
+    // --- 登录逻辑 ---
     function handleLogin() {
-        const u = document.getElementById('login-user').value.trim();
-        const p = document.getElementById('login-pass').value.trim();
-        const msg = document.getElementById('login-msg');
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value.trim();
+        const err = document.getElementById('error-msg');
 
-        if(!u) {
-            msg.className = "msg-box msg-err";
-            msg.innerText = "请输入账号或卡密";
+        if (!u || !p) {
+            err.innerText = "请输入账号和密码";
             return;
         }
 
-        // 显示假加载动画
-        document.getElementById('loader').style.display = 'flex';
-        
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-            
-            // 1. 管理员逻辑
-            if(u === ADMIN_USER) {
-                if(p === ADMIN_PASS) {
-                    saveSession({role: 'admin'});
-                    showPage('page-admin');
-                } else {
-                    msg.className = "msg-box msg-err";
-                    msg.innerText = "管理员密码错误";
-                }
-                return;
-            }
-
-            // 2. 普通用户/卡密逻辑 (这里模拟验证，实际可对接数据库)
-            // 假设卡密格式为 LB- 开头，或者只要输入了就算通过(演示用)
-            if(u.startsWith('LB-') || u.length > 3) {
-                 saveSession({role: 'user', key: u});
-                 showPage('page-user');
+        // 1. 管理员验证
+        if (u === 'admin') {
+            if (p === DB.admin) {
+                showPage('admin');
+                loadHitmen();
             } else {
-                msg.className = "msg-box msg-err";
-                msg.innerText = "无效的卡密或账号";
+                err.innerText = "管理员密码错误 (默认: admin123)";
             }
-        }, 800); // 模拟800毫秒网络延迟
+            return;
+        }
+
+        // 2. 普通用户验证 (模拟：只要不是admin，且长度大于3就算通过，或者在白名单里)
+        // 这里为了演示，假设任何非admin账号都能进，或者你可以限制必须在DB.users里
+        if (u !== 'admin' && p.length > 0) {
+             // 简单的模拟：如果输入的是 user1 且密码随意，或者你在白名单里
+             // 实际使用时，你可以把 DB.users 改成对象 {user1: '123'} 来校验密码
+             showPage('user');
+        } else {
+            err.innerText = "账号不存在";
+        }
     }
 
-    // --- 辅助功能 ---
-    function showPage(pageId) {
-        ['page-login', 'page-user', 'page-admin'].forEach(id => {
-            document.getElementById(id).classList.add('hidden');
-        });
-        document.getElementById(pageId).classList.remove('hidden');
-    }
-
-    function saveSession(data) {
-        localStorage.setItem('lb_session', JSON.stringify(data));
+    // --- 页面切换 ---
+    function showPage(role) {
+        document.getElementById('login-page').style.display = 'none';
+        if (role === 'admin') {
+            document.getElementById('admin-dash').style.display = 'block';
+            document.getElementById('admin-name').innerText = 'Administrator';
+        } else {
+            document.getElementById('user-dash').style.display = 'block';
+            document.getElementById('user-name').innerText = document.getElementById('username').value;
+        }
     }
 
     function logout() {
-        localStorage.removeItem('lb_session');
-        location.reload();
+        location.reload(); // 简单粗暴，刷新页面即退出
     }
 
-    // --- 管理员功能 ---
-    function saveNotice() {
-        const txt = document.getElementById('admin-notice-input').value;
-        if(txt) {
-            localStorage.setItem('lb_notice', txt);
-            alert("公告已发布！");
-            loadNotice();
-        }
+    // --- 加载打手列表 ---
+    function loadHitmen() {
+        const list = document.getElementById('hitman-list');
+        let html = '';
+        DB.hitmen.forEach(h => {
+            html += `
+            <div class="list-item">
+                <div>
+                    <span class="tag-lb">${h.id}</span> 
+                    <span style="margin-left:5px; color:#ccc">${h.level}</span>
+                </div>
+                <div style="color: ${h.status === '接单中' ? '#0f0' : '#888'}">${h.status}</div>
+            </div>`;
+        });
+        list.innerHTML = html;
     }
 
-    function loadNotice() {
-        const txt = localStorage.getItem('lb_notice');
-        const bar = document.getElementById('notice-area');
-        if(txt) {
-            document.getElementById('notice-text').innerText = txt;
-            bar.classList.remove('hidden');
-        } else {
-            bar.classList.add('hidden');
-        }
+    // --- AI 助手逻辑 ---
+    function toggleAI() {
+        const box = document.getElementById('ai-box');
+        box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
     }
 
-    function generateKey() {
-        // 生成类似 LB-X8Y2Z 的随机码
-        const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const key = `LB-${rand}`;
-        document.getElementById('new-key-display').innerText = key;
-    }
-</script>
+    function sendMsg() {
+        const input = document.getElementById('ai-input');
+        const val = input.value;
+        if (!val) return;
 
-</body>
-</html>
+        const history = document.getElementById('chat-history');
+        
+        // 用户消息
+        history.innerHTML += `<div class="msg-user">${val}</div>`;
+        input.value = '';
+        history.scrollTop = history.scrollHeight;
+
+        // 模拟AI回复
+        setTimeout(() => {
+            let reply = "我是AI助手，您可以咨询关于9
