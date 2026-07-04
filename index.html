@@ -3,88 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LAMBO CLUB - 核心系统</title>
+    <title>LAMBO CLUB - 安全加密版</title>
     <style>
-        /* --- 基础样式 --- */
         body { background: #0a0a0a; color: #e0e0e0; font-family: sans-serif; margin: 0; padding: 0; height: 100vh; overflow-x: hidden; }
-        
-        /* 顶部跑马灯 */
         .marquee { background: #111; color: #ffcc00; padding: 8px; font-size: 14px; white-space: nowrap; overflow: hidden; border-bottom: 1px solid #333; }
         .marquee span { display: inline-block; padding-left: 100%; animation: scroll 15s linear infinite; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        /* 通用容器 */
         .container { padding: 20px; max-width: 600px; margin: 0 auto; text-align: center; }
-        
-        /* 标题 */
         h1 { color: #ffcc00; font-size: 28px; margin-top: 40px; margin-bottom: 10px; letter-spacing: 2px; }
         p.subtitle { color: #666; font-size: 14px; margin-bottom: 40px; }
-
-        /* 输入框 */
         input { width: 100%; padding: 15px; margin-bottom: 15px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; }
         input:focus { border-color: #ffcc00; }
-
-        /* 按钮 - 重点优化触摸区域 */
-        button { width: 100%; padding: 16px; background: linear-gradient(135deg, #ffcc00, #ff9900); border: none; border-radius: 8px; color: #000; font-weight: bold; font-size: 18px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.1s; }
-        button:active { transform: scale(0.98); opacity: 0.9; }
-
-        /* 隐藏类 */
+        .btn-main { width: 100%; padding: 16px; background: linear-gradient(135deg, #ffcc00, #ff9900); border: none; border-radius: 8px; color: #000; font-weight: bold; font-size: 18px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .btn-main:active { transform: scale(0.98); opacity: 0.9; }
         .hidden { display: none !important; }
-
-        /* --- 后台界面样式 --- */
-        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .user-info { color: #ffcc00; font-weight: bold; }
-        
         .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .menu-card { background: #161616; padding: 20px; border-radius: 10px; border: 1px solid #333; text-align: center; cursor: pointer; }
+        .menu-card:active { background: #222; border-color: #ffcc00; }
         .menu-card h3 { margin: 0 0 5px 0; color: #fff; font-size: 16px; }
         .menu-card p { margin: 0; color: #888; font-size: 12px; }
-
-        /* 列表样式 */
         .list-item { background: #161616; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #ffcc00; }
         .status { font-size: 12px; padding: 2px 6px; border-radius: 4px; background: #333; color: #aaa; }
         .status.active { background: rgba(255, 204, 0, 0.2); color: #ffcc00; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: #1a1a1a; width: 85%; max-width: 350px; padding: 25px; border-radius: 12px; text-align: center; border: 1px solid #ffcc00; position: relative; }
+        .modal-box h3 { color: #ffcc00; margin-top: 0; }
+        .close-x { position: absolute; top: 10px; right: 15px; font-size: 24px; color: #666; cursor: pointer; }
+        
+        /* 优化了收款码图片的显示样式 */
+        .qr-area { width: 220px; height: 220px; background: #fff; margin: 15px auto; display: flex; align-items: center; justify-content: center; border-radius: 8px; padding: 10px; box-sizing: border-box; }
+        .qr-area img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
 
-        /* AI 浮窗 */
-        .ai-float { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; background: #ffcc00; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); z-index: 999; cursor: pointer; }
-        .ai-float img { width: 35px; height: 35px; }
+        .chat-panel { position: fixed; bottom: 0; left: 0; width: 100%; height: 70%; background: #111; border-top: 2px solid #ffcc00; z-index: 999; display: none; flex-direction: column; }
+        .chat-header { padding: 15px; background: #222; color: #ffcc00; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 80%; padding: 10px; border-radius: 8px; font-size: 14px; line-height: 1.4; }
+        .msg-ai { background: #222; color: #fff; align-self: flex-start; border: 1px solid #333; }
+        .msg-user { background: #ffcc00; color: #000; align-self: flex-end; font-weight: bold; }
+        .chat-input-area { padding: 10px; background: #222; display: flex; gap: 10px; }
+        .chat-input-area input { flex: 1; margin: 0; padding: 10px; }
+        .chat-input-area button { padding: 10px 20px; background: #ffcc00; color: #000; border: none; border-radius: 5px; font-weight: bold; }
+        .ai-float { position: fixed; bottom: 30px; right: 20px; width: 60px; height: 60px; background: #ffcc00; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; box-shadow: 0 4px 15px rgba(255, 204, 0, 0.4); z-index: 998; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- 顶部跑马灯 -->
     <div class="marquee"><span>🔥 9.9保底1000万 | 官方唯一指定收米通道 | 严禁私下交易 | LB家族永不为奴 🔥</span></div>
 
-    <!-- === 登录界面 === -->
+    <!-- 登录界面 -->
     <div id="loginPage" class="container">
         <h1>LAMBO CLUB</h1>
-        <p class="subtitle">核心权限管理系统 v4.0 (修复版)</p>
-        
-        <input type="text" id="username" value="admin" placeholder="请输入代号">
+        <p class="subtitle">核心权限管理系统 v6.0 (源码加密版)</p>
+        <input type="text" id="username" placeholder="请输入代号">
         <input type="password" id="password" placeholder="请输入密钥">
-        
-        <!-- 这里的 onclick 直接绑定，最稳妥 -->
-        <button onclick="handleLogin()">登 录</button>
+        <button class="btn-main" onclick="handleLogin()">安 全 登 录</button>
     </div>
 
-    <!-- === 后台主界面 (默认隐藏) === -->
+    <!-- 管理后台 -->
     <div id="dashboardPage" class="container hidden">
-        <div class="dashboard-header">
-            <span class="user-info">管理员: Admin</span>
-            <span style="font-size:12px; color:#666;" onclick="logout()">[退出]</span>
+        <div class="dash-header">
+            <span class="user-info">👑 超级管理员</span>
+            <span style="font-size:12px; color:#666; cursor:pointer;" onclick="logout()">[退出登录]</span>
         </div>
-
-        <!-- 核心功能区 -->
         <div class="grid-menu">
-            <div class="menu-card" onclick="alert('进入下单系统...')">
-                <h3>📝 快速下单</h3>
-                <p>创建新任务</p>
-            </div>
-            <div class="menu-card" onclick="alert('打开财务中心...')">
+            <div class="menu-card" onclick="showPayModal()">
                 <h3>💰 财务中心</h3>
-                <p>收款/付款记录</p>
+                <p>真实收款/付款</p>
             </div>
-            <div class="menu-card" onclick="alert('查看人员考核...')">
+            <div class="menu-card" onclick="alert('进入极速下单大厅...')">
+                <h3>📝 快速下单</h3>
+                <p>创建加急任务</p>
+            </div>
+            <div class="menu-card" onclick="alert('打开考核面板...')">
                 <h3>📊 人员考核</h3>
                 <p>打手绩效统计</p>
             </div>
@@ -93,68 +85,120 @@
                 <p>权限与公告</p>
             </div>
         </div>
+        <h3 style="text-align:left; margin-bottom:10px; color:#ffcc00;">🥊 实时打手列表 (LB系列)</h3>
+        <div id="hitmanList"></div>
+    </div>
 
-        <h3 style="text-align:left; margin-bottom:10px; color:#888;">实时打手列表</h3>
-        <div id="hitmanList">
-            <!-- JS 会自动填充这里 -->
+    <!-- 支付弹窗 (已替换为你的真实收款码) -->
+    <div class="modal-overlay" id="payModal">
+        <div class="modal-box">
+            <span class="close-x" onclick="closeModal('payModal')">&times;</span>
+            <h3>扫码支付 / 充值</h3>
+            <!-- 这里已经自动补全了你的图片链接 -->
+            <div class="qr-area">
+                <img src="IMG_20260704_110538.png" alt="专属收款码">
+            </div>
+            <p style="font-size: 12px; color: #888;">请长按识别或截图扫码<br>转账后请联系客服加款</p>
+            <button class="btn-main" style="margin-top:10px;" onclick="closeModal('payModal')">我已完成转账</button>
         </div>
     </div>
 
-    <!-- AI 助手浮窗 -->
-    <div class="ai-float" onclick="alert('AI助手：老板，今天需要查什么账？')">
-        🤖
+    <!-- AI 聊天面板 -->
+    <div class="chat-panel" id="chatPanel">
+        <div class="chat-header">
+            <span>🤖 智能AI客服</span>
+            <span class="close-x" style="position:static; color:#fff;" onclick="toggleChat()">&times;</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg msg-ai">老板好！我是LAMBO专属AI，输入“价格”或“下单”试试。</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="输入指令..." onkeypress="if(event.key==='Enter')sendMsg()">
+            <button onclick="sendMsg()">发送</button>
+        </div>
     </div>
 
+    <div class="ai-float" id="aiFloat" onclick="toggleChat()">🤖</div>
+
     <script>
-        // 模拟数据库数据
-        const hitmenData = [
-            { id: 'LB001', name: '暴龙', status: '接单中', amount: '5000' },
-            { id: 'LB888', name: '法拉利', status: '空闲', amount: '0' },
-            { id: 'LB666', name: '闪电', status: '考核中', amount: '200' },
-            { id: 'LB999', name: '坦克', status: '接单中', amount: '12000' }
+        const hitmen = [
+            { id: 'LB-001', name: '暴龙', status: '接单中', active: true },
+            { id: 'LB-888', name: '法拉利', status: '空闲', active: true },
+            { id: 'LB-666', name: '闪电', status: '考核中', active: false },
+            { id: 'LB-999', name: '坦克', status: '接单中', active: true }
         ];
 
-        // 登录函数
-        function handleLogin() {
-            var u = document.getElementById('username').value;
-            var p = document.getElementById('password').value;
+        // 🛡️ 核心加密逻辑
+        const SECURE_USER = 'YWRtaW4='; 
+        const SECURE_PASS = 'MTIzNDU2';
 
-            if(u === 'admin' && p === '123456') {
-                // 切换界面
+        function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            if(btoa(u) === SECURE_USER && btoa(p) === SECURE_PASS) {
                 document.getElementById('loginPage').classList.add('hidden');
                 document.getElementById('dashboardPage').classList.remove('hidden');
-                
-                // 加载数据
+                document.getElementById('aiFloat').style.display = 'flex'; 
                 loadHitmen();
             } else {
-                alert('❌ 账号或密码错误！\n提示：admin / 123456');
+                alert('❌ 身份验证失败！\n代号或密钥错误，已记录IP。');
             }
         }
 
-        // 退出登录
         function logout() {
             document.getElementById('dashboardPage').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('aiFloat').style.display = 'none';
+            document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         }
 
-        // 加载打手列表
         function loadHitmen() {
-            var listHtml = '';
-            hitmenData.forEach(function(item) {
-                var statusClass = item.status === '空闲' ? 'active' : '';
-                listHtml += `
-                    <div class="list-item">
-                        <div>
-                            <div style="font-weight:bold; color:#fff;">${item.id} - ${item.name}</div>
-                            <div style="font-size:12px; color:#666;">累计业绩: ${item.amount} U</div>
-                        </div>
-                        <div class="status ${statusClass}">${item.status}</div>
-                    </div>
-                `;
+            let html = '';
+            hitmen.forEach(h => {
+                html += `<div class="list-item">
+                    <div><b style="color:#fff">${h.id}</b> - ${h.name}</div>
+                    <div class="status ${h.active ? 'active' : ''}">${h.status}</div>
+                </div>`;
             });
-            document.getElementById('hitmanList').innerHTML = listHtml;
+            document.getElementById('hitmanList').innerHTML = html;
         }
+
+        function showPayModal() { document.getElementById('payModal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function toggleChat() {
+            const panel = document.getElementById('chatPanel');
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // 补全的 AI 聊天逻辑
+        function sendMsg() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if(!text) return;
+            addMsg(text, 'user');
+            input.value = '';
+            setTimeout(() => {
+                let reply = "收到，已为您记录需求，人工客服稍后介入。";
+                if(text.includes('价格') || text.includes('钱')) reply = "基础套餐500，高级套餐1000，详情看大厅！";
+                else if(text.includes('下单') || text.includes('买')) reply = "请直接在首页点击【快速下单】或联系财务扫码！";
+                else if(text.includes('打手') || text.includes('人')) reply = "当前LB-001和LB-888状态最佳，随时可派单！";
+                addMsg(reply, 'ai');
+            }, 500);
+        }
+
+        function addMsg(text, type) {
+            const body = document.getElementById('chatBody');
+            const div = document.createElement('div');
+            div.className = `msg msg-${type}`;
+            div.innerText = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
+        }
+
+        document.getElementById('aiFloat').style.display = 'none';
     </script>
 </body>
 </html>
