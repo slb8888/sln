@@ -3,177 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LAMBO CLUB - 核心权限系统</title>
+    <title>兰博护航 - 专业电竞服务平台</title>
     <style>
-        /* 全局重置 */
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        body { background-color: #050505; color: #fff; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; height: 100vh; overflow-x: hidden; }
-
-        /* --- 登录界面样式 (保留原汁原味) --- */
-        #login-screen {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            padding: 20px;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-        }
-        .logo-area { text-align: center; margin-bottom: 40px; }
-        .logo-title { font-size: 32px; font-weight: 900; color: #ffcc00; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255, 204, 0, 0.3); }
-        .logo-sub { font-size: 12px; color: #666; letter-spacing: 1px; }
-
-        .input-group { width: 100%; max-width: 320px; margin-bottom: 20px; }
-        .input-field {
-            width: 100%; padding: 15px; background: #111; border: 1px solid #333;
-            color: #fff; font-size: 14px; border-radius: 4px; transition: 0.3s;
-        }
-        .input-field:focus { border-color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.2); }
-
-        .btn-login {
-            width: 100%; max-width: 320px; padding: 15px; background: linear-gradient(90deg, #ffcc00, #ff9900);
-            border: none; color: #000; font-weight: bold; font-size: 16px; border-radius: 4px; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3); margin-bottom: 20px;
-        }
-        .btn-login:active { transform: scale(0.98); }
-
-        /* 新增：游客通道入口 */
-        .guest-entry { font-size: 12px; color: #444; text-decoration: underline; cursor: pointer; margin-top: 10px; }
-        .guest-entry:hover { color: #ffcc00; }
-
-        /* --- 主界面样式 (登录后或游客进入后显示) --- */
-        #main-app { display: none; padding: 20px; padding-bottom: 80px; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .header-banner {
-            background: linear-gradient(45deg, #111, #222); border: 1px solid #333;
-            padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;
-        }
-        .marquee { color: #ffcc00; font-size: 14px; white-space: nowrap; overflow: hidden; }
-
-        .card { background: #111; border: 1px solid #222; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-        .card h3 { color: #fff; font-size: 16px; margin-bottom: 10px; border-left: 3px solid #ffcc00; padding-left: 10px; }
+        /* --- 基础设置 --- */
+        :root { --primary: #007aff; --bg: #f5f5f5; --white: #ffffff; --text: #333; --gray: #999; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
         
-        .wechat-btn {
-            display: block; width: 100%; padding: 12px; background: #07c160;
-            color: #fff; text-align: center; text-decoration: none; border-radius: 4px;
-            font-weight: bold; margin-top: 10px;
-        }
+        /* --- 顶部导航 --- */
+        .header { background: var(--white); padding: 15px; text-align: center; font-weight: bold; font-size: 18px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #eee; }
+        
+        /* --- 页面容器 --- */
+        .page { display: none; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* 简单的底部导航 */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0a0a;
-            border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 10px 0;
-        }
-        .nav-item { color: #666; font-size: 12px; text-align: center; }
-        .nav-item.active { color: #ffcc00; }
+        /* --- 首页样式 --- */
+        .banner { width: 100%; height: 150px; background: linear-gradient(135deg, #007aff, #00c6ff); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold; }
+        .notice { background: #fffbe6; color: #faad14; padding: 10px; font-size: 12px; display: flex; align-items: center; }
+        .notice span { margin-left: 5px; color: #333; }
+        
+        .grid-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; background: var(--white); margin-bottom: 10px; }
+        .grid-item { text-align: center; font-size: 12px; color: #666; }
+        .grid-icon { width: 40px; height: 40px; background: #e6f7ff; border-radius: 10px; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: bold; }
 
-        /* 隐藏的管理员面板 */
-        #admin-panel { display: none; border: 1px dashed #ffcc00; padding: 10px; margin-top: 20px; }
+        .section-title { padding: 10px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .section-title span:last-child { font-size: 12px; color: var(--gray); font-weight: normal; }
+
+        .product-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 10px; }
+        .product-card { background: var(--white); border-radius: 8px; overflow: hidden; padding-bottom: 10px; }
+        .p-img { width: 100%; height: 100px; background: #ddd; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
+        .p-info { padding: 8px; }
+        .p-title { font-size: 14px; font-weight: bold; margin-bottom: 5px; height: 40px; overflow: hidden; }
+        .p-tags span { font-size: 10px; background: #f0f0f0; color: #666; padding: 2px 4px; border-radius: 4px; }
+        .p-price { margin-top: 8px; color: #ff4d4f; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+
+        /* --- 分类页样式 --- */
+        .category-container { display: flex; height: calc(100vh - 110px); }
+        .cat-sidebar { width: 90px; background: #f0f0f0; overflow-y: auto; }
+        .cat-item { padding: 15px 10px; text-align: center; font-size: 13px; color: #666; border-left: 3px solid transparent; }
+        .cat-item.active { background: var(--white); color: var(--primary); border-left-color: var(--primary); font-weight: bold; }
+        .cat-content { flex: 1; background: var(--white); padding: 10px; overflow-y: auto; }
+        .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .cat-box { text-align: center; font-size: 12px; }
+        .cat-box-img { width: 100%; aspect-ratio: 1; background: #eee; border-radius: 8px; margin-bottom: 5px; }
+
+        /* --- 消息页样式 --- */
+        .msg-list { background: var(--white); }
+        .msg-item { display: flex; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; }
+        .msg-avatar { width: 45px; height: 45px; background: #007aff; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; color: white; }
+        .msg-info { flex: 1; }
+        .msg-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .msg-name { font-weight: bold; font-size: 15px; }
+        .msg-time { font-size: 12px; color: #999; }
+        .msg-text { font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+
+        /* --- 个人中心样式 --- */
+        .user-header { background: linear-gradient(to right, #007aff, #00c6ff); padding: 30px 20px; color: white; display: flex; align-items: center; }
+        .user-avatar { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; margin-right: 15px; border: 2px solid white; }
+        .user-name { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .user-id { font-size: 12px; opacity: 0.8; }
+        
+        .balance-card { background: var(--white); margin: -20px 15px 15px; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-around; text-align: center; }
+        .bal-num { font-size: 18px; font-weight: bold; color: #333; margin-top: 5px; }
+        .bal-label { font-size: 12px; color: #999; }
+
+        .menu-list { background: var(--white); margin-top: 10px; }
+        .menu-item { padding: 15px; border-bottom: 1px solid #f9f9f9; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+        .menu-item:active { background: #f9f9f9; }
+
+        /* --- 底部导航栏 --- */
+        .tab-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: var(--white); border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+        .tab-item { text-align: center; color: #999; font-size: 10px; flex: 1; }
+        .tab-item.active { color: var(--primary); }
+        .tab-icon { font-size: 22px; margin-bottom: 2px; display: block; }
+
+        /* --- 弹窗 --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
+        .modal { background: white; width: 80%; border-radius: 12px; padding: 20px; text-align: center; }
+        .modal h3 { margin-bottom: 10px; }
+        .modal p { font-size: 14px; color: #666; margin-bottom: 20px; }
+        .modal-btn { background: var(--primary); color: white; padding: 10px 0; width: 100%; border-radius: 20px; border: none; font-size: 16px; }
     </style>
 </head>
 <body>
 
-    <!-- 1. 登录界面 (门面) -->
-    <div id="login-screen">
-        <div class="logo-area">
-            <div class="logo-title">LAMBO CLUB</div>
-            <div class="logo-sub">核心权限管理系统 v6.0 (源码加密版)</div>
-        </div>
+    <!-- 顶部标题 -->
+    <div class="header" id="page-title">兰博护航</div>
 
-        <div class="input-group">
-            <input type="text" id="admin-code" class="input-field" placeholder="请输入代号 (管理员必填)">
-        </div>
-        <div class="input-group">
-            <input type="password" id="admin-key" class="input-field" placeholder="请输入密钥 (管理员必填)">
-        </div>
-
-        <button class="btn-login" onclick="checkLogin()">安全登录</button>
+    <!-- 1. 首页 -->
+    <div id="home-page" class="page active">
+        <div class="banner">LAMBO CLUB<br><span style="font-size:14px; font-weight:normal;">专业 · 高效 · 安全</span></div>
+        <div class="notice">📢 公告：<span>系统运行正常，目前接单中，加微秒回复。</span></div>
         
-        <!-- 关键修改：给普通用户留的门 -->
-        <div class="guest-entry" onclick="enterAsGuest()">我是普通玩家，直接进入 ></div>
+        <div class="grid-nav">
+            <div class="grid-item"><div class="grid-icon">🎮</div>和平精英</div>
+            <div class="grid-item"><div class="grid-icon">🔫</div>三角洲行动</div>
+            <div class="grid-item"><div class="grid-icon">💣</div>暗区突围</div>
+            <div class="grid-item"><div class="grid-icon">⚡</div>极速上分</div>
+        </div>
+
+        <div class="section-title"><span>热门推荐</span><span>查看更多 ></span></div>
+        <div class="product-list">
+            <!-- 商品卡片 1 -->
+            <div class="product-card" onclick="orderAction('苏尔南撤离单')">
+                <div class="p-img" style="background:#333;">苏尔南</div>
+                <div class="p-info">
+                    <div class="p-title">苏尔南冲突·保底1000万物资</div>
+                    <div class="p-tags"><span>包赔</span> <span>纯手工</span></div>
+                    <div class="p-price">¥68.00 <button class="buy-btn">立即下单</button></div>
+                </div>
+            </div>
+            <!-- 商品卡片 2 -->
+            <div class="product-card" onclick="orderAction('地铁逃生护航')">
+                <div class="p-img" style="background:#555;">地铁逃生</div>
+                <div class="p-info">
+                    <div class="p-title">地铁逃生·老六克星护航</div>
+                    <div class="p-tags"><span>kd保证</span> <span>装备全送</span></div>
+                    <div class="p-price">¥128.00 <button class="buy-btn">立即下单</button></div>
+                </div>
+            </div>
+             <!-- 商品卡片 3 -->
+             <div class="product-card" onclick="orderAction('三角洲摸金')">
+                <div class="p-img" style="background:#222;">三角洲</div>
+                <div class="p-info">
+                    <div class="p-title">三角洲行动·零号大坝摸金</div>
+                    <div class="p-tags"><span>曼德尔砖</span> <span>红卡</span></div>
+                    <div class="p-price">¥199.00 <button class="buy-btn">立即下单</button></div>
+                </div>
+            </div>
+             <!-- 商品卡片 4 -->
+             <div class="product-card" onclick="orderAction('普通排位代练')">
+                <div class="p-img" style="background:#444;">排位代练</div>
+                <div class="p-info">
+                    <div class="p-title">王牌/战神段位·指定打手</div>
+                    <div class="p-tags"><span>效率</span> <span>绿玩</span></div>
+                    <div class="p-price">¥20.00/星 <button class="buy-btn">立即下单</button></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- 2. 主程序界面 (内容) -->
-    <div id="main-app">
-        <div class="header-banner">
-            <div style="font-size: 18px; font-weight: bold; color: #fff; margin-bottom: 5px;">🔥 9.9保底1000万</div>
-            <div class="marquee">公告：官方唯一指定收米通道，谨防假冒... (此处可滚动)</div>
-        </div>
-
-        <!-- 这里的內容所有人都能看到 -->
-        <div class="card">
-            <h3>💎 业务范围</h3>
-            <p style="color:#888; font-size:14px; line-height:1.6;">
-                - 高端局护航<br>
-                - 极速解封<br>
-                - 账号托管<br>
-                - 效率第一，不满意包退
-            </p>
-        </div>
-
-        <div class="card">
-            <h3>🚀 立即联系</h3>
-            <p style="color:#888; font-size:14px; margin-bottom:10px;">添加主管微信，备注“护航”</p>
-            <!-- 点击复制微信号 -->
-            <div class="wechat-btn" onclick="copyWechat()">一键复制微信号: a192uu91</div>
-        </div>
-
-        <!-- 只有管理员登录成功才会显示这块 -->
-        <div id="admin-panel">
-            <h3 style="color:#ffcc00; text-align:center;">⚙️ 管理员控制台</h3>
-            <p style="color:#fff; font-size:12px; text-align:center; margin:10px 0;">欢迎您，老板。在此处可更新打手列表。</p>
-            <button style="width:100%; padding:8px; background:#333; color:#fff; border:none; border-radius:4px;">发布新任务</button>
+    <!-- 2. 分类页 -->
+    <div id="category-page" class="page">
+        <div class="category-container">
+            <div class="cat-sidebar">
+                <div class="cat-item active">热门游戏</div>
+                <div class="cat-item">和平精英</div>
+                <div class="cat-item">PUBG Mobile</div>
+                <div class="cat-item">COD Mobile</div>
+                <div class="cat-item">英雄联盟</div>
+            </div>
+            <div class="cat-content">
+                <div class="cat-grid">
+                    <div class="cat-box"><div class="cat-box-img"></div>苏尔南</div>
+                    <div class="cat-box"><div class="cat-box-img"></div>旧封锁区</div>
+                    <div class="cat-box"><div class="cat-box-img"></div>辐射区</div>
+                    <div class="cat-box"><div class="cat-box-img"></div>迷雾港口</div>
+                    <div class="cat-box"><div class="cat-box-img"></div>冰河禁区</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // 配置区：在这里设置您的管理员密码
-        const TRUE_CODE = "admin";   // 您的代号
-        const TRUE_KEY = "888888";   // 您的密钥
-
-        function checkLogin() {
-            const code = document.getElementById('admin-code').value;
-            const key = document.getElementById('admin-key').value;
-
-            if (code === TRUE_CODE && key === TRUE_KEY) {
-                // 密码正确 -> 进管理员模式
-                alert("身份验证通过，欢迎回来老板！");
-                showMainApp(true); 
-            } else if (code === "" && key === "") {
-                // 如果没填 -> 提示
-                alert("请输入代号和密钥，或者点击下方【普通玩家】入口");
-            } else {
-                // 填错了 -> 拦截
-                alert("代号或密钥错误！无权访问管理系统。");
-            }
-        }
-
-        function enterAsGuest() {
-            // 游客模式 -> 只能看前台
-            showMainApp(false);
-        }
-
-        function showMainApp(isAdmin) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            
-            const adminPanel = document.getElementById('admin-panel');
-            if (isAdmin) {
-                adminPanel.style.display = 'block'; // 显示管理后台
-            } else {
-                adminPanel.style.display = 'none';  // 隐藏管理后台
-            }
-        }
-
-        function copyWechat() {
-            const wx = "a192uu91";
-            navigator.clipboard.writeText(wx).then(() => {
-                alert("微信号 " + wx + " 已复制！请打开微信添加好友。");
-            }).catch(() => {
-                alert("复制失败，请手动添加：a192uu91");
-            });
-        }
-    </script>
-</body>
-</html>
+    <!-- 3. 消息页 -->
+    <div id="message-page" class="page">
+        <div class="msg-list">
+            <div class="msg-item">
+                <div class="msg-avatar">客</div>
+                <div class="msg-info">
+                    <div class="msg-top"><span class="msg-name">官方客服-兰博</span><span class="msg-time">刚刚</span></div>
+                    <div class="msg-text">您好！欢迎光临兰博护航，有什么可以帮您？</div>
+                </div>
+            </div>
+            <div class="
